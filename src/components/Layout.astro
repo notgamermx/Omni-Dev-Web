@@ -1,0 +1,74 @@
+---
+// Main layout component
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import CommandPalette from './CommandPalette.tsx';
+import ToastProvider from './Toast.tsx';
+
+interface Props {
+  title: string;
+  description?: string;
+  children: import('astro').AstroSlottedContent;
+}
+
+const { title, description = 'OmniDev — AI-native development environment with autonomous coding agents, multi-provider LLM orchestration, and explicit permission gates.', children } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <meta name="theme-color" content="#080A0F" />
+  <link rel="canonical" href={canonicalURL} />
+  <title>{title} | OmniDev</title>
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="OmniDev" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonicalURL} />
+  <meta property="og:image" content="/og-image.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content="/og-image.png" />
+
+  <!-- Preconnect for fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Global styles -->
+  <link rel="stylesheet" href="/styles/global.css" />
+
+  <!-- GSAP will be loaded client-side in components that need it -->
+</head>
+<body class="bg-bg text-textMain antialiased min-h-screen flex flex-col">
+  <!-- Ambient background orbs -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+    <div class="orb w-[600px] h-[400px] bg-blue-600/[0.06] top-[-100px] left-[-100px]"></div>
+    <div class="orb w-[500px] h-[400px] bg-purple-600/[0.04] top-[200px] right-[-150px]"></div>
+    <div class="orb w-[400px] h-[300px] bg-blue-500/[0.04] bottom-[-80px] left-[30%]"></div>
+    <div class="hero-grid absolute inset-0"></div>
+  </div>
+
+  <Header />
+
+  <main id="app-main" class="relative z-10 flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-14">
+    <slot />
+  </main>
+
+  <Footer />
+
+  <!-- Command Palette -->
+  <CommandPalette />
+
+  <!-- Toast Container -->
+  <ToastProvider client:load />
+</body>
+</html>

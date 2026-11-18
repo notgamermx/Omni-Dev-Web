@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OmniDev — Official Website</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+          },
+          colors: {
+            bg:          '#080A0F',
+            surface:     '#0F1218',
+            elevated:    '#161B24',
+            elevated2:   '#1D2330',
+            border:      '#1F2635',
+            borderStrong:'#2D3650',
+            borderGlow:  '#3B82F640',
+            textMain:    '#EDF0F5',
+            textSub:     '#C8CDD8',
+            textMuted:   '#8A94A6',
+            textDim:     '#525D72',
+            accent:      '#3B82F6',
+            accentHover: '#2563EB',
+            accentSoft:  '#3B82F614',
+            accentGlow:  '#3B82F630',
+            amber:       '#F59E0B',
+            amberSoft:   '#F59E0B18',
+            success:     '#22C55E',
+            successSoft: '#22C55E18',
+            danger:      '#EF4444',
+            dangerSoft:  '#EF444418',
+            purple:      '#A855F7',
+            purpleSoft:  '#A855F714',
+          },
+          keyframes: {
+            'fade-in-up': {
+              '0%':   { opacity: '0', transform: 'translateY(16px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            'fade-in': {
+              '0%':   { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            shimmer: {
+              '0%':   { backgroundPosition: '-200% center' },
+              '100%': { backgroundPosition:  '200% center' },
+            },
+            pulse2: {
+              '0%,100%': { opacity: '1' },
+              '50%':     { opacity: '.4' },
+            },
+            'blink-cursor': {
+              '0%,49%': { opacity: '1' },
+              '50%,100%':{ opacity: '0' },
+            },
+            'slide-in-right': {
+              '0%':   { transform: 'translateX(100%)', opacity: '0' },
+              '100%': { transform: 'translateX(0)', opacity: '1' },
+            },
+            'slide-in-down': {
+              '0%':   { transform: 'translateY(-8px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+            float: {
+              '0%,100%': { transform: 'translateY(0px)' },
+              '50%':     { transform: 'translateY(-6px)' },
+            },
+            'spin-slow': {
+              '0%':   { transform: 'rotate(0deg)' },
+              '100%': { transform: 'rotate(360deg)' },
+            },
+          },
+          animation: {
+            'fade-in-up':     'fade-in-up 0.5s ease both',
+            'fade-in':        'fade-in 0.4s ease both',
+            'shimmer':        'shimmer 2.5s linear infinite',
+            'pulse2':         'pulse2 2s ease infinite',
+            'blink-cursor':   'blink-cursor 1s infinite',
+            'slide-in-right': 'slide-in-right 0.3s cubic-bezier(.16,1,.3,1)',
+            'slide-in-down':  'slide-in-down 0.25s ease both',
+            'float':          'float 3s ease-in-out infinite',
+            'spin-slow':      'spin-slow 8s linear infinite',
+          },
+          boxShadow: {
+            'glow-blue': '0 0 24px 0 rgba(59,130,246,0.18)',
+            'glow-blue-lg': '0 0 48px 0 rgba(59,130,246,0.14)',
+            'inner-top': 'inset 0 1px 0 0 rgba(255,255,255,0.05)',
+          },
+        }
+      }
+    };
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    html, body {
+      background-color: #080A0F;
+      color: #EDF0F5;
+      font-family: 'Inter', system-ui, sans-serif;
+      margin: 0; padding: 0;
+      overflow-x: hidden;
+    }
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #1F2635; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #2D3650; }
+
+    /* Selection */
+    ::selection { background: #3B82F628; color: #EDF0F5; }
+
+    /* Focus ring */
+    :focus-visible { outline: 2px solid #3B82F6; outline-offset: 2px; border-radius: 4px; }
+
+    /* Code block */
+    .code-block {
+      background: #060810;
+      border: 1px solid #1F2635;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.6;
+      position: relative;
+    }
+
+    /* Typing cursor */
+    .typing-cursor {
+      display: inline-block;
+      width: 6px; height: 14px;
+      background: #3B82F6;
+      vertical-align: middle;
+      margin-left: 2px;
+      border-radius: 1px;
+      animation: blink-cursor 1s infinite;
+    }
+    @keyframes blink-cursor {
+      0%,49% { opacity: 1; } 50%,100% { opacity: 0; }
+    }
+
+    /* Hero grid background */
+    .hero-grid {
+      background-image:
+        linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    /* Noise texture overlay */
+    .noise::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 128px;
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    /* Glow orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    /* Gradient text */
+    .gradient-text {
+      background: linear-gradient(135deg, #EDF0F5 0%, #A8B4CC 50%, #6B82A6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .gradient-text-blue {
+      background: linear-gradient(135deg, #93C5FD 0%, #3B82F6 50%, #1D4ED8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Shimmer button */
+    .shimmer-btn {
+      background: linear-gradient(90deg, #3B82F6, #60A5FA, #3B82F6);
+      background-size: 200% auto;
+      animation: shimmer 2.5s linear infinite;
+    }
+
+    /* Perspective showcase */
+    .showcase-perspective { perspective: 1400px; }
+
+    /* Nav active indicator */
+    .nav-link { position: relative; }
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 50%; transform: translateX(-50%);
+      width: 16px; height: 2px;
+      background: #3B82F6;
+      border-radius: 2px;
+    }
+
+    /* Page transition */
+    .page-enter { animation: fade-in-up 0.35s cubic-bezier(.16,1,.3,1); }
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Glass card */
+    .glass-card {
+      background: linear-gradient(135deg, rgba(22,27,36,0.95) 0%, rgba(13,16,22,0.9) 100%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid #1F2635;
+      box-shadow: 0 1px 0 0 rgba(255,255,255,0.04) inset, 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    /* Status dot */
+    .status-dot-pulse {
+      animation: pulse-ring 2s ease infinite;
+    }
+    @keyframes pulse-ring {
+      0%   { box-shadow: 0 0 0 0 rgba(59,130,246,0.5); }
+      70%  { box-shadow: 0 0 0 6px rgba(59,130,246,0); }
+      100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+    }
+
+    /* Stat counter */
+    .stat-number {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum';
+    }
+
+    /* Command palette backdrop */
+    .palette-backdrop { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+
+    /* Smooth line highlight */
+    .code-line-active { background: rgba(59,130,246,0.08); border-left: 2px solid #3B82F6; }
+
+    /* Progress bar */
+    .progress-track { background: rgba(59,130,246,0.1); }
+
+    /* Mobile nav animation */
+    #mobile-nav { transition: max-height 0.25s ease, opacity 0.2s ease; max-height: 0; opacity: 0; overflow: hidden; }
+    #mobile-nav.open { max-height: 500px; opacity: 1; }
+
+    /* Tooltip */
+    [data-tooltip] { position: relative; }
+    [data-tooltip]::before {
+      content: attr(data-tooltip);
+      position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+      background: #161B24; border: 1px solid #2D3650; color: #EDF0F5;
+      font-size: 11px; padding: 4px 8px; border-radius: 5px; white-space: nowrap;
+      opacity: 0; pointer-events: none; transition: opacity 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+    [data-tooltip]:hover::before { opacity: 1; }
+
+    /* Scrollbar track in code */
+    .code-scroll::-webkit-scrollbar { height: 4px; }
+    .code-scroll::-webkit-scrollbar-track { background: transparent; }
+    .code-scroll::-webkit-scrollbar-thumb { background: #2D3650; border-radius: 2px; }
+
+    /* Toast animation */
+    @keyframes toast-in {
+      from { transform: translateY(16px) scale(0.96); opacity: 0; }
+      to   { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    @keyframes toast-out {
+      from { transform: translateY(0) scale(1); opacity: 1; }
+      to   { transform: translateY(8px) scale(0.96); opacity: 0; }
+    }
+    .toast-enter { animation: toast-in 0.25s cubic-bezier(.16,1,.3,1) forwards; }
+    .toast-exit  { animation: toast-out 0.2s ease forwards; }
+
+    /* Feature card hover */
+    .feature-card {
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .feature-card:hover {
+      border-color: #3B82F640;
+      box-shadow: 0 0 32px rgba(59,130,246,0.08), 0 4px 24px rgba(0,0,0,0.3);
+      transform: translateY(-2px);
+    }
+
+    /* Nav button transitions */
+    .nav-link { transition: color 0.15s, background 0.15s; }
+
+    /* Stat card */
+    .stat-card {
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .stat-card:hover {
+      border-color: #2D3650;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    /* Smooth tab underline */
+    .tab-active {
+      background: rgba(59,130,246,0.12);
+      color: #93C5FD;
+      border-color: rgba(59,130,246,0.3);
+    }
+
+    /* Keyword highlighting */
+    .kw-blue   { color: #60A5FA; }
+    .kw-purple { color: #C084FC; }
+    .kw-green  { color: #6EE7B7; }
+    .kw-amber  { color: #FCD34D; }
+    .kw-muted  { color: #6B7280; }
+    .kw-string { color: #86EFAC; }
+    .kw-type   { color: #93C5FD; }
+
+    /* Roadmap timeline */
+    .roadmap-line { background: linear-gradient(to bottom, #3B82F6, #1F2635); }
+
+    /* CMS section hover */
+    .cms-section-hover { transition: background 0.15s; }
+    .cms-section-hover:hover { background: rgba(59,130,246,0.03); }
+
+    /* Announcement bar */
+    .announcement-scroll {
+      animation: scroll-text 20s linear infinite;
+    }
+    @keyframes scroll-text {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+  </style>
+</head>
+<body class="bg-bg text-textMain antialiased min-h-screen flex flex-col">
+
+  <!-- ═══ AMBIENT BACKGROUND ORBS ═══ -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+    <div class="orb w-[600px] h-[400px] bg-blue-600/[0.06] top-[-100px] left-[-100px]"></div>
+    <div class="orb w-[500px] h-[400px] bg-purple-600/[0.04] top-[200px] right-[-150px]"></div>
+    <div class="orb w-[400px] h-[300px] bg-blue-500/[0.04] bottom-[-80px] left-[30%]"></div>
+    <div class="hero-grid absolute inset-0"></div>
+  </div>
+
+  <!-- ═══ ANNOUNCEMENT BAR ═══ -->
+  <div id="announcement-bar" class="relative z-20 bg-surface/80 backdrop-blur-sm border-b border-border/60 text-xs py-2 px-4 flex items-center justify-between gap-3">
+    <div class="flex items-center gap-2 text-textMuted min-w-0 overflow-hidden">
+      <span class="relative flex h-2 w-2 shrink-0">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-50"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-accent status-dot-pulse"></span>
+      </span>
+      <span id="announcement-text" class="truncate">OmniDev Desktop &amp; CLI — Open-Source AI Development Environment</span>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <span id="header-release-badge" class="font-mono text-[11px] px-2 py-0.5 rounded-full bg-elevated border border-border text-textMuted tabular-nums">
+        Checking…
+      </span>
+      <button id="open-cms-top" type="button" class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-elevated border border-border hover:border-borderStrong text-textSub transition-all">
+        Admin CMS
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ PRIMARY NAVIGATION ═══ -->
+  <header id="main-header" class="sticky top-0 z-30 transition-all duration-200">
+    <div class="bg-bg/90 backdrop-blur-md border-b border-border/70">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+
+        <!-- Logo -->
+        <button type="button" data-nav="home" class="flex items-center gap-2.5 group">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-blue-700 flex items-center justify-center font-mono text-xs font-bold text-white shadow-glow-blue group-hover:shadow-glow-blue-lg transition-shadow">
+            OD
+          </div>
+          <div class="flex flex-col leading-none">
+            <span class="font-bold tracking-tight text-textMain text-[15px]">OmniDev</span>
+            <span class="text-[10px] text-textDim font-mono leading-none">AI Dev Env</span>
+          </div>
+        </button>
+
+        <!-- Desktop Nav -->
+        <nav id="desktop-nav" class="hidden lg:flex items-center gap-0.5" aria-label="Primary">
+          <button type="button" data-nav="home"      class="nav-link px-3 py-1.5 rounded-md text-sm font-medium text-textMuted hover:text-textMain hover:bg-surface">Home</button>
+          <button type="button" data-nav="download"  class="nav-link px-3 py-1.5 rounded-md text-sm font-medium text-textMuted hover:text-textMain hover:bg-surface">Download</button>
+          <button type="button" data-nav="updates"   class="nav-link px-3 py-1.5 rounded-md text-sm font-medium text-textMuted hover:text-textMain hover:bg-surface">Updates</button>
+          <button type="button" data-nav="docs"      class="nav-link px-3 py-1.5 rounded-md text-sm font-medium text-textMuted hover:text-textMain hover:bg-surface">Docs</button>
+          <button type="button" data-nav="license"   class="nav-link px-3 py-1.5 rounded-md text-sm font-medium text-textMuted hover:text-textMain hover:bg-surface">License</button>
+          <button type="button" data-nav="security"  class="nav-link px-3 py-1.5 rounded-md text-sm font-medium text-textMuted hover:text-textMain hover:bg-surface">Security</button>
+          <button type="button" data-nav="community" class="nav-link px-3 py-1.5 rounded-md text-sm font-medium text-textMuted hover:text-textMain hover:bg-surface">Community</button>
+          <button type="button" data-nav="about"     class="nav-link px-3 py-1.5 rounded-md text-sm font-medium text-textMuted hover:text-textMain hover:bg-surface">About</button>
+        </nav>
+
+        <!-- Right actions -->
+        <div class="flex items-center gap-2">
+          <!-- Command palette trigger -->
+          <button id="cmd-palette-btn" type="button" data-tooltip="Quick search (⌘K)"
+            class="hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-surface border border-border hover:border-borderStrong text-xs text-textDim transition-all group">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19A8 8 0 103 11a8 8 0 008 8z"/>
+            </svg>
+            <span class="font-mono text-[10px] text-textDim px-1 py-0.5 rounded bg-elevated border border-border">⌘K</span>
+          </button>
+
+          <a href="https://github.com/notgamermx/omnidev" target="_blank" rel="noopener noreferrer"
+            class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-surface border border-border hover:border-borderStrong text-textSub transition-all">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+            GitHub
+          </a>
+          <button type="button" data-nav="download" class="shimmer-btn px-3.5 py-1.5 rounded-md text-xs font-semibold text-white transition-all shadow-glow-blue hover:shadow-glow-blue-lg">
+            Download
+          </button>
+          <button id="mobile-menu-btn" type="button"
+            class="lg:hidden p-1.5 rounded-md border border-border bg-surface text-textSub hover:border-borderStrong transition-all" aria-label="Toggle menu" aria-expanded="false">
+            <svg id="mobile-menu-icon-open" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+            <svg id="mobile-menu-icon-close" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Nav Drawer -->
+      <div id="mobile-nav" class="lg:hidden border-t border-border/50 bg-surface/95 px-4 pb-4 pt-3">
+        <div class="grid grid-cols-2 gap-1">
+          <button type="button" data-nav="home"      class="nav-link text-left px-3 py-2.5 rounded-md text-sm font-medium text-textMuted hover:text-textMain hover:bg-elevated">🏠 Home</button>
+          <button type="button" data-nav="download"  class="nav-link text-left px-3 py-2.5 rounded-md text-sm font-medium text-textMuted hover:text-textMain hover:bg-elevated">⬇️ Download</button>
+          <button type="button" data-nav="updates"   class="nav-link text-left px-3 py-2.5 rounded-md text-sm font-medium text-textMuted hover:text-textMain hover:bg-elevated">🔄 Updates</button>
+          <button type="button" data-nav="docs"      class="nav-link text-left px-3 py-2.5 rounded-md text-sm font-medium text-textMuted hover:text-textMain hover:bg-elevated">📖 Docs</button>
+          <button type="button" data-nav="license"   class="nav-link text-left px-3 py-2.5 rounded-md text-sm font-medium text-textMuted hover:text-textMain hover:bg-elevated">⚖️ License</button>
+          <button type="button" data-nav="security"  class="nav-link text-left px-3 py-2.5 rounded-md text-sm font-medium text-textMuted hover:text-textMain hover:bg-elevated">🔒 Security</button>
+          <button type="button" data-nav="community" class="nav-link text-left px-3 py-2.5 rounded-md text-sm font-medium text-textMuted hover:text-textMain hover:bg-elevated">💬 Community</button>
+          <button type="button" data-nav="about"     class="nav-link text-left px-3 py-2.5 rounded-md text-sm font-medium text-textMuted hover:text-textMain hover:bg-elevated">ℹ️ About</button>
+        </div>
+        <div class="mt-3 pt-3 border-t border-border flex gap-2">
+          <a href="https://github.com/notgamermx/omnidev" target="_blank" rel="noopener noreferrer"
+            class="flex-1 text-center py-2 rounded-md bg-elevated border border-border text-xs font-medium text-textSub">View on GitHub</a>
+          <button type="button" data-nav="download"
+            class="flex-1 py-2 rounded-md bg-accent text-white text-xs font-semibold">Download</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main id="app-main" class="relative z-10 flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-14"></main>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="relative z-10 border-t border-border bg-surface/60 backdrop-blur-sm mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-sm">
+      <div>
+        <div class="flex items-center gap-2.5 mb-3">
+          <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-accent to-blue-700 flex items-center justify-center font-mono text-[11px] font-bold text-white">OD</div>
+          <span class="font-bold text-textMain">OmniDev</span>
+        </div>
+        <p class="text-xs text-textMuted leading-relaxed mb-4">
+          AI-powered desktop development environment with autonomous coding agents, multi-provider LLM orchestration, and explicit execution controls.
+        </p>
+        <div class="flex items-center gap-2">
+          <a href="https://github.com/notgamermx/omnidev" target="_blank" rel="noopener noreferrer" aria-label="GitHub"
+            class="w-7 h-7 rounded-md bg-elevated border border-border flex items-center justify-center hover:border-borderStrong transition-colors text-textMuted hover:text-textMain">
+            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <div class="font-semibold text-textSub mb-3 text-xs uppercase tracking-widest">Product</div>
+        <ul class="space-y-2 text-xs text-textMuted">
+          <li><button type="button" data-nav="home"     class="hover:text-textMain transition-colors">Overview</button></li>
+          <li><button type="button" data-nav="download" class="hover:text-textMain transition-colors">Download</button></li>
+          <li><button type="button" data-nav="updates"  class="hover:text-textMain transition-colors">Updates &amp; Roadmap</button></li>
+          <li><button type="button" data-nav="docs"     class="hover:text-textMain transition-colors">Documentation</button></li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-semibold text-textSub mb-3 text-xs uppercase tracking-widest">Governance</div>
+        <ul class="space-y-2 text-xs text-textMuted">
+          <li><button type="button" data-nav="license"   class="hover:text-textMain transition-colors">Copyright &amp; License</button></li>
+          <li><button type="button" data-nav="security"  class="hover:text-textMain transition-colors">Security Policy</button></li>
+          <li><button type="button" data-nav="about"     class="hover:text-textMain transition-colors">About &amp; Contributors</button></li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-semibold text-textSub mb-3 text-xs uppercase tracking-widest">Community</div>
+        <ul class="space-y-2 text-xs text-textMuted">
+          <li><a href="https://github.com/notgamermx/omnidev" target="_blank" rel="noopener noreferrer" class="hover:text-textMain transition-colors">GitHub Repository</a></li>
+          <li><button type="button" data-nav="community" class="hover:text-textMain transition-colors">Feedback &amp; Issues</button></li>
+          <li><button id="open-cms-footer" type="button" class="text-accent hover:text-blue-400 transition-colors">Admin CMS ↗</button></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-border/50 py-5 px-4 sm:px-6 max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-textDim">
+      <span>&copy; 2026 OmniDev Project — <a href="https://github.com/notgamermx/omnidev" target="_blank" rel="noopener noreferrer" class="text-textMuted hover:text-textSub underline underline-offset-2 transition-colors">notgamermx/omnidev</a></span>
+      <div class="flex items-center gap-3">
+        <span id="footer-repo-stats" class="font-mono text-[11px] flex items-center gap-2">
+          <span id="footer-stars" class="hidden items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-amber" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <span id="footer-stars-count">0</span>
+          </span>
+          <span class="text-textDim">github.com/notgamermx/omnidev</span>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══ COMMAND PALETTE ═══ -->
+  <div id="cmd-palette" class="hidden fixed inset-0 z-[60] flex items-start justify-center pt-[12vh] px-4" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="palette-backdrop absolute inset-0 bg-bg/80" id="cmd-palette-backdrop"></div>
+    <div class="relative w-full max-w-lg glass-card rounded-xl overflow-hidden shadow-2xl animate-slide-in-down">
+      <div class="flex items-center gap-3 px-4 py-3 border-b border-border">
+        <svg class="w-4 h-4 text-textDim shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19A8 8 0 103 11a8 8 0 008 8z"/>
+        </svg>
+        <input id="cmd-search" type="text" placeholder="Search pages, features…" autocomplete="off"
+          class="flex-1 bg-transparent text-sm text-textMain placeholder-textDim focus:outline-none" />
+        <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-elevated border border-border text-textDim">ESC</kbd>
+      </div>
+      <div id="cmd-results" class="max-h-80 overflow-y-auto py-2"></div>
+      <div class="px-4 py-2 border-t border-border flex items-center gap-3 text-[11px] text-textDim">
+        <span><kbd class="font-mono px-1 bg-elevated border border-border rounded">↑↓</kbd> Navigate</span>
+        <span><kbd class="font-mono px-1 bg-elevated border border-border rounded">↵</kbd> Open</span>
+        <span><kbd class="font-mono px-1 bg-elevated border border-border rounded">ESC</kbd> Close</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ADMIN CMS MODAL ═══ -->
+  <div id="cms-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div class="palette-backdrop absolute inset-0 bg-bg/80" id="cms-backdrop"></div>
+    <div class="relative glass-card rounded-xl w-full max-w-3xl max-h-[90vh] flex flex-col animate-slide-in-down">
+      <div class="px-6 py-4 border-b border-border flex items-center justify-between gap-3">
+        <div>
+          <h2 class="text-base font-semibold text-textMain flex items-center gap-2">
+            <span class="w-5 h-5 rounded bg-accentSoft flex items-center justify-center">
+              <svg class="w-3 h-3 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            </span>
+            Content Management
+          </h2>
+          <p class="text-xs text-textMuted mt-0.5">Edit site copy, add releases, and manage the roadmap. Export JSON to commit.</p>
+        </div>
+        <button id="close-cms-btn" type="button" class="p-1.5 rounded-md border border-border bg-elevated text-textDim hover:text-textMain hover:border-borderStrong transition-all" aria-label="Close">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-8 flex-1 text-sm">
+        <!-- Site Copy -->
+        <section class="space-y-4">
+          <h3 class="text-xs font-semibold uppercase tracking-widest text-textDim flex items-center gap-2">
+            <span class="w-4 h-px bg-border flex-1 max-w-[1rem]"></span> Site &amp; Hero Copy <span class="flex-1 h-px bg-border"></span>
+          </h3>
+          <div>
+            <label class="block text-xs text-textMuted mb-1.5 font-medium" for="cms-announcement">Announcement Bar Text</label>
+            <input id="cms-announcement" type="text" class="w-full px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accentGlow transition-colors" />
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs text-textMuted mb-1.5 font-medium" for="cms-hero-title">Hero Headline</label>
+              <input id="cms-hero-title" type="text" class="w-full px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accentGlow transition-colors" />
+            </div>
+            <div>
+              <label class="block text-xs text-textMuted mb-1.5 font-medium" for="cms-fallback-version">Fallback / Pre-release Tag</label>
+              <input id="cms-fallback-version" type="text" class="w-full px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain font-mono text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accentGlow transition-colors" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs text-textMuted mb-1.5 font-medium" for="cms-hero-subtitle">Hero Description</label>
+            <textarea id="cms-hero-subtitle" rows="2" class="w-full px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accentGlow transition-colors resize-none"></textarea>
+          </div>
+          <button id="cms-save-copy" type="button" class="px-4 py-2 rounded-lg bg-accent hover:bg-accentHover text-white text-xs font-semibold transition-colors shadow-glow-blue">
+            Save Site Copy
+          </button>
+        </section>
+
+        <!-- Add Release Note -->
+        <section class="space-y-4">
+          <h3 class="text-xs font-semibold uppercase tracking-widest text-textDim flex items-center gap-2">
+            <span class="flex-1 h-px bg-border"></span> Add Release Note <span class="flex-1 h-px bg-border"></span>
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <input id="cms-rel-version" type="text" placeholder="Version (e.g. v0.2.0)" class="px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain font-mono text-sm focus:outline-none focus:border-accent transition-colors" />
+            <input id="cms-rel-date" type="date" class="px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain text-sm focus:outline-none focus:border-accent transition-colors" />
+          </div>
+          <textarea id="cms-rel-notes" rows="3" placeholder="Changelog notes (one item per line)" class="w-full px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain text-sm focus:outline-none focus:border-accent transition-colors resize-none"></textarea>
+          <button id="cms-add-release" type="button" class="px-4 py-2 rounded-lg bg-elevated border border-borderStrong hover:border-accent text-textMain text-xs font-semibold transition-all">
+            + Add Release Note
+          </button>
+        </section>
+
+        <!-- Add Roadmap Item -->
+        <section class="space-y-4">
+          <h3 class="text-xs font-semibold uppercase tracking-widest text-textDim flex items-center gap-2">
+            <span class="flex-1 h-px bg-border"></span> Add Roadmap Item <span class="flex-1 h-px bg-border"></span>
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <input id="cms-road-title" type="text" placeholder="Feature title" class="sm:col-span-2 px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain text-sm focus:outline-none focus:border-accent transition-colors" />
+            <select id="cms-road-status" class="px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain text-sm focus:outline-none focus:border-accent transition-colors">
+              <option value="planned">Planned</option>
+              <option value="in-progress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          <input id="cms-road-desc" type="text" placeholder="Short description" class="w-full px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain text-sm focus:outline-none focus:border-accent transition-colors" />
+          <button id="cms-add-roadmap" type="button" class="px-4 py-2 rounded-lg bg-elevated border border-borderStrong hover:border-accent text-textMain text-xs font-semibold transition-all">
+            + Add Roadmap Item
+          </button>
+        </section>
+      </div>
+
+      <div class="px-6 py-3 border-t border-border bg-bg/50 flex flex-wrap items-center justify-between gap-3 rounded-b-xl">
+        <div class="flex items-center gap-2">
+          <button id="cms-export-json" type="button" class="px-3 py-1.5 rounded-lg bg-surface border border-border hover:border-borderStrong text-xs font-medium text-textSub transition-all flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            Export JSON
+          </button>
+          <button id="cms-reset-defaults" type="button" class="px-3 py-1.5 rounded-lg bg-surface border border-border hover:border-danger/50 text-xs font-medium text-danger transition-all">
+            Reset Defaults
+          </button>
+        </div>
+        <span id="cms-status-msg" class="text-xs text-textMuted"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TOAST ═══ -->
+  <div id="toast" class="hidden fixed bottom-6 right-6 z-[70] glass-card text-textMain px-4 py-3 rounded-xl text-xs font-medium flex items-center gap-2.5 max-w-xs">
+    <svg id="toast-icon" class="w-4 h-4 text-success shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+    </svg>
+    <span id="toast-text"></span>
+  </div>
+
+  <script>
+  (function() {
+    'use strict';
+
+    /* ─────────── Constants ─────────── */
+    const REPO_OWNER  = 'notgamermx';
+    const REPO_NAME   = 'omnidev';
+    const REPO_URL    = `https://github.com/${REPO_OWNER}/${REPO_NAME}`;
+    const STORAGE_KEY = 'omnidev_cms_content_v2';
+    const PAGES = ['home','download','updates','docs','license','security','community','about'];
+
+    /* ─────────── Default Content ─────────── */
+    const DEFAULT_CONTENT = {
+      announcement: 'OmniDev Desktop & CLI — Open-Source AI Development Environment',
+      heroTitle: 'The AI-native workbench built for developers who want control.',
+      heroSubtitle: 'An open-source Tauri 2, React, and FastAPI workbench with autonomous coding agents, multi-provider LLM orchestration, and explicit permission gates.',
+      fallbackVersion: 'main-dev',
+      customReleases: [],
+      roadmap: [
+        { id: 'r1', title: 'Multi-provider LLM orchestration', desc: 'Connect local Ollama models and external API providers in one workspace.', status: 'completed' },
+        { id: 'r2', title: 'React + Tauri 2 desktop workbench', desc: '4-panel layout with file explorer, code editor, agent panel, and terminal.', status: 'completed' },
+        { id: 'r3', title: 'FastAPI + SQLite persistent memory', desc: 'Store project context, conversations, and task history locally.', status: 'completed' },
+        { id: 'r4', title: 'AutoMode & permission boundary controls', desc: 'Fine-grained approval rules for file edits and terminal commands.', status: 'in-progress' },
+        { id: 'r5', title: 'Teach Mode interactive walkthroughs', desc: 'Step-by-step guided explanations synced with live repository diffs.', status: 'in-progress' },
+        { id: 'r6', title: 'Dynamic GitHub Releases auto-updater', desc: 'In-app update checks and verified binary downloads from GitHub Releases.', status: 'planned' },
+        { id: 'r7', title: 'Plugin & custom agent tool SDK', desc: 'Define custom repository tools and validation hooks per project.', status: 'planned' }
+      ]
+    };
+
+    /* ─────────── App State ─────────── */
+    const APP_STATE = {
+      currentPage:    'home',
+      previewMode:    'automode',
+      demoPlaying:    true,
+      demoProgress:   0,
+      demoStepIdx:    0,
+      downloadPlatform:'windows',
+      roadmapFilter:  'all',
+      docsSection:    'install',
+      docsSearch:     '',
+      github:         { loading: true, error: null, repo: null, releases: [] },
+      feedbackList:   [],
+      content:        loadContent(),
+      cmdPaletteOpen: false,
+      cmsOpen:        false,
+    };
+
+    const DEMO_ORDER = ['automode','omnimode','teachmode','agents'];
+    let demoTimer = null;
+
+    function loadContent() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return { ...DEFAULT_CONTENT, ...JSON.parse(raw) };
+      } catch (_) {}
+      return JSON.parse(JSON.stringify(DEFAULT_CONTENT));
+    }
+
+    function saveContent() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(APP_STATE.content)); } catch(_) {}
+    }
+
+    /* ─────────── Toast ─────────── */
+    let toastTimer;
+    function showToast(msg, type = 'success') {
+      const el   = document.getElementById('toast');
+      const icon = document.getElementById('toast-icon');
+      const text = document.getElementById('toast-text');
+      text.textContent = msg;
+      const colorMap = { success: 'text-success', error: 'text-danger', info: 'text-accent' };
+      icon.className = `w-4 h-4 shrink-0 ${colorMap[type] || colorMap.info}`;
+      if (type === 'error') {
+        icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>`;
+      } else {
+        icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>`;
+      }
+      el.classList.remove('hidden','toast-exit');
+      el.classList.add('toast-enter');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        el.classList.remove('toast-enter');
+        el.classList.add('toast-exit');
+        setTimeout(() => el.classList.add('hidden'), 220);
+      }, 2600);
+    }
+
+    function copyText(text) {
+      const doFallback = () => {
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); showToast('Copied to clipboard'); }
+        catch(_) { showToast('Copy failed', 'error'); }
+        document.body.removeChild(ta);
+      };
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard')).catch(doFallback);
+      } else doFallback();
+    }
+
+    function e(str) {
+      return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    /* ─────────── GitHub ─────────── */
+    async function fetchGitHubData() {
+      APP_STATE.github.loading = true;
+      APP_STATE.github.error = null;
+      updateHeaderBadges();
+      try {
+        const [repoRes, relRes] = await Promise.all([
+          fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}`),
+          fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/releases`)
+        ]);
+        if (repoRes.ok) APP_STATE.github.repo = await repoRes.json();
+        if (relRes.ok)  APP_STATE.github.releases = await relRes.json();
+        else APP_STATE.github.error = `GitHub API ${relRes.status}`;
+      } catch(err) {
+        APP_STATE.github.error = 'Unable to reach GitHub API';
+      } finally {
+        APP_STATE.github.loading = false;
+        updateHeaderBadges();
+        renderPage();
+      }
+    }
+
+    function getLatestRelease() {
+      const r = APP_STATE.github.releases;
+      if (r?.length > 0) return r.find(x => !x.prerelease) || r[0];
+      const cr = APP_STATE.content.customReleases;
+      if (cr?.length > 0) {
+        return { tag_name: cr[0].version, published_at: cr[0].date, body: cr[0].notes.join('\n'), html_url: `${REPO_URL}/releases`, assets: [], isCustom: true };
+      }
+      return null;
+    }
+
+    function updateHeaderBadges() {
+      document.getElementById('announcement-text').textContent = APP_STATE.content.announcement;
+      const badge = document.getElementById('header-release-badge');
+      const latest = getLatestRelease();
+      if (APP_STATE.github.loading) badge.textContent = 'Checking…';
+      else if (latest) badge.textContent = `Latest: ${latest.tag_name}`;
+      else badge.textContent = `Source: ${APP_STATE.content.fallbackVersion}`;
+
+      const repo = APP_STATE.github.repo;
+      if (repo) {
+        const starsEl = document.getElementById('footer-stars');
+        const starsCount = document.getElementById('footer-stars-count');
+        if (starsEl && starsCount) {
+          starsCount.textContent = (repo.stargazers_count ?? 0).toLocaleString();
+          starsEl.classList.remove('hidden');
+          starsEl.classList.add('flex');
+        }
+      }
+    }
+
+    /* ─────────── Preview / Showcase ─────────── */
+    const PREVIEW_MODES = {
+      automode: {
+        label: 'AutoMode', icon: '⚡',
+        badge: 'Autonomous + Approval Gate',
+        file: 'backend/agent_runner.py',
+        prompt: 'Add permission gate before shell execution',
+        lang: 'python',
+        code: [
+          ['kw-blue','async '],['kw-purple','def '],['kw-amber','execute_step'],['kw-muted','(task_id: '],['kw-type','str'],['kw-muted',', tool_call: '],['kw-type','ToolCall'],['kw-muted','):'],
+          ['kw-muted','    policy = '],['kw-blue','await '],['kw-muted','permissions.check(tool_call.name)'],
+          ['kw-blue','    if '],['kw-muted','policy.requires_approval:'],
+          ['kw-muted','        '],['kw-blue','await '],['kw-muted','ws.emit_approval_request(task_id, tool_call)'],
+          ['kw-muted','        decision = '],['kw-blue','await '],['kw-muted','ws.wait_for_user(task_id)'],
+          ['kw-blue','        if not '],['kw-muted','decision.approved:'],
+          ['kw-blue','            return '],['kw-green','ToolResult'],['kw-muted','(status='],['kw-string','"blocked"'],['kw-muted',')'],
+          ['kw-blue','    return await '],['kw-muted','tool_runner.run(tool_call)'],
+        ],
+        agentTitle: 'AutoMode · Task #42', agentStatus: 'Awaiting Approval', statusColor: 'text-amber border-amber/30 bg-amberSoft',
+        agentMsg: 'Staged edit on backend/agent_runner.py (+4 / -1). Requesting approval to run pytest.',
+        props: [['Mode','AutoMode'],['Gate','Ask on shell_exec'],['Backend','FastAPI + SQLite'],['Diff','+4 / -1 lines']],
+        terminal: ['$ omnidev agent --mode auto "Add permission gate"','[agent] Analyzing FastAPI tool runner…','[diff]  Staged patch on agent_runner.py','[gate]  WAITING: approve pytest?'],
+        termColors: ['text-textDim','text-blue-400','text-green-400','text-amber'],
+      },
+      omnimode: {
+        label: 'OmniMode', icon: '🌐',
+        badge: 'Multi-Provider Orchestration',
+        file: 'src/providers/router.ts',
+        prompt: 'Route local-only tasks to Ollama',
+        lang: 'typescript',
+        code: [
+          ['kw-blue','export function '],['kw-amber','routeProvider'],['kw-muted','(task: '],['kw-type','WorkspaceTask'],['kw-muted','): '],['kw-type','ProviderConfig'],['kw-muted',' {'],
+          ['kw-blue','  if '],['kw-muted','(task.privacy === '],['kw-string','"local-only"'],['kw-muted',') {'],
+          ['kw-blue','    return '],['kw-muted','{ provider: '],['kw-string','"ollama"'],['kw-muted',', model: '],['kw-string','"qwen2.5-coder:7b"'],['kw-muted',' };'],
+          ['kw-muted','  }'],
+          ['kw-blue','  return '],['kw-muted','{'],
+          ['kw-muted','    provider: task.preferredProvider ?? '],['kw-string','"openai"'],['kw-muted',','],
+          ['kw-muted','    fallback: '],['kw-string','"anthropic"'],
+          ['kw-muted','  };'],
+          ['kw-muted','}'],
+        ],
+        agentTitle: 'OmniMode · Router', agentStatus: 'Synced', statusColor: 'text-success border-success/30 bg-successSoft',
+        agentMsg: 'Connected Ollama (local) + cloud fallbacks. Project memory synced across 142 symbols.',
+        props: [['Mode','OmniMode'],['Local','Ollama (11434)'],['Memory','142 symbols'],['Shell','Tauri 2 PTY']],
+        terminal: ['$ omnidev status --providers','[ok] ollama     localhost:11434  active','[ok] sqlite     .omnidev/memory.db  142','[ok] terminal   PTY session ready'],
+        termColors: ['text-textDim','text-green-400','text-green-400','text-green-400'],
+      },
+      teachmode: {
+        label: 'Teach Mode', icon: '📖',
+        badge: 'Guided Step-by-Step Walkthrough',
+        file: 'src/components/ProjectLauncherModal.tsx',
+        prompt: 'Explain workspace hydration flow',
+        lang: 'tsx',
+        code: [
+          ['kw-blue','export function '],['kw-amber','ProjectLauncherModal'],['kw-muted','({ onSelect }: '],['kw-type','Props'],['kw-muted',') {'],
+          ['kw-blue','  const '],['kw-muted','[projects, setProjects] = '],['kw-green','useState'],['kw-muted','<'],['kw-type','Project'],['kw-muted','[]>([]);'],
+          ['kw-muted','  // '],['kw-purple','Step 1: Load recent workspaces from SQLite'],
+          ['kw-green','  useEffect'],['kw-muted','(() => {'],
+          ['kw-muted','    projectService.'],['kw-amber','listRecent'],['kw-muted','().then(setProjects);'],
+          ['kw-muted','  }, []);'],
+          ['kw-blue','  return '],['kw-muted','<'],['kw-green','WorkspaceList'],['kw-muted',' items={projects} onPick={onSelect} />;'],
+          ['kw-muted','}'],
+        ],
+        agentTitle: 'Teach Mode · Walkthrough', agentStatus: 'Step 2/3', statusColor: 'text-purple border-purple/30 bg-purpleSoft',
+        agentMsg: 'useEffect hydrates recent workspaces once on mount without blocking the Tauri window paint.',
+        props: [['Mode','Teach Mode'],['Step','2 / 3'],['Topic','React + IPC'],['Target','ProjectLauncher']],
+        terminal: ['$ omnidev teach src/components/ProjectLauncherModal.tsx','[step 1/3] State initialization with TypeScript generics','[step 2/3] Async SQLite fetch via FastAPI bridge','[step 3/3] Interactive checkpoint ready'],
+        termColors: ['text-textDim','text-textMuted','text-purple','text-blue-400'],
+      },
+      agents: {
+        label: 'AI Agents', icon: '🤖',
+        badge: 'Persistent Memory & Tool Pool',
+        file: 'backend/memory/store.py',
+        prompt: 'Persist conversation turns to SQLite',
+        lang: 'python',
+        code: [
+          ['kw-blue','class '],['kw-green','ProjectMemoryStore'],['kw-muted',':'],
+          ['kw-blue','    def '],['kw-amber','save_turn'],['kw-muted','(self, project_id: '],['kw-type','str'],['kw-muted',', role: '],['kw-type','str'],['kw-muted',', content: '],['kw-type','str'],['kw-muted','):'],
+          ['kw-muted','        self.db.execute('],
+          ['kw-muted','            '],['kw-string','"INSERT INTO conversations"'],
+          ['kw-muted','            '],['kw-string','"(project_id, role, content)"'],
+          ['kw-muted','            '],['kw-string','"VALUES (?, ?, ?)"'],['kw-muted',','],
+          ['kw-muted','            (project_id, role, content)'],
+          ['kw-muted','        )'],
+          ['kw-muted','        self.db.commit()'],
+        ],
+        agentTitle: 'Agent Pool · 2 Active', agentStatus: 'Running', statusColor: 'text-success border-success/30 bg-successSoft',
+        agentMsg: 'Planner Agent mapped 3 subtasks. Verifier queued typecheck + build verification.',
+        props: [['Mode','AI Agents'],['Active','2 Agents'],['Store','SQLite WAL'],['Queue','1 verification']],
+        terminal: ['$ omnidev tasks list','[done]   #101  Scaffold SQLite schema','[active] #102  Wire Tauri IPC commands','[queued] #103  Run npm build && pytest'],
+        termColors: ['text-textDim','text-green-400','text-blue-400','text-textMuted'],
+      }
+    };
+
+    function renderCodeLine(segments) {
+      return segments.map(([cls,txt]) => `<span class="${cls}">${e(txt)}</span>`).join('');
+    }
+
+    function renderShowcaseInner() {
+      const p = PREVIEW_MODES[APP_STATE.previewMode];
+      return `
+        <div class="px-4 py-2.5 bg-elevated/80 border-b border-border flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1.5" aria-hidden="true">
+              <span class="w-2.5 h-2.5 rounded-full bg-danger/60"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber/60"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-success/60"></span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-mono text-textMuted text-[11px]">${e(p.file)}</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-bg border border-border text-textDim font-mono">.${e(p.lang)}</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <div class="flex items-center bg-bg border border-border rounded-lg p-0.5 gap-0.5">
+              ${DEMO_ORDER.map(key => `
+                <button type="button" data-preview-mode="${key}"
+                  class="px-2.5 py-1 rounded-md text-[11px] font-medium transition-all ${APP_STATE.previewMode === key ? 'bg-accent text-white shadow-sm' : 'text-textDim hover:text-textMain'}">
+                  ${PREVIEW_MODES[key].icon} ${PREVIEW_MODES[key].label}
+                </button>`).join('')}
+            </div>
+            <button id="demo-play-toggle" type="button"
+              class="px-2.5 py-1 rounded-md bg-bg border border-border hover:border-borderStrong text-[11px] font-mono text-textMuted hover:text-textMain transition-all">
+              ${APP_STATE.demoPlaying ? '⏸ Pause' : '▶ Play'}
+            </button>
+          </div>
+        </div>
+
+        <div class="h-0.5 progress-track">
+          <div id="demo-progress-bar" class="h-full bg-gradient-to-r from-accent to-blue-400 transition-all duration-75" style="width:${APP_STATE.demoProgress}%"></div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 text-left min-h-[300px]">
+          <!-- Sidebar -->
+          <div class="lg:col-span-3 border-b lg:border-b-0 lg:border-r border-border p-4 bg-bg/60">
+            <div class="space-y-4">
+              <div>
+                <div class="text-[10px] uppercase tracking-widest text-textDim mb-2 font-semibold">Workspace</div>
+                <div class="px-2.5 py-2 rounded-md bg-elevated border border-border text-[11px] text-textMuted font-mono leading-relaxed">
+                  <span class="text-accent">&gt; </span>${e(p.prompt)}<span class="typing-cursor"></span>
+                </div>
+              </div>
+              <div>
+                <div class="text-[10px] uppercase tracking-widest text-textDim mb-2 font-semibold">Repository</div>
+                <div class="font-mono space-y-0.5 text-[11px]">
+                  <div class="text-textDim px-1">src/</div>
+                  <div class="pl-4 py-0.5 rounded ${APP_STATE.previewMode==='teachmode'?'bg-accentSoft text-accent':'text-textDim hover:text-textMuted'} cursor-pointer transition-colors">ProjectLauncherModal.tsx</div>
+                  <div class="pl-4 py-0.5 rounded ${APP_STATE.previewMode==='omnimode'?'bg-accentSoft text-accent':'text-textDim hover:text-textMuted'} cursor-pointer transition-colors">providers/router.ts</div>
+                  <div class="text-textDim px-1 mt-1">backend/</div>
+                  <div class="pl-4 py-0.5 rounded ${APP_STATE.previewMode==='automode'?'bg-accentSoft text-accent':'text-textDim hover:text-textMuted'} cursor-pointer transition-colors">agent_runner.py</div>
+                  <div class="pl-4 py-0.5 rounded ${APP_STATE.previewMode==='agents'?'bg-accentSoft text-accent':'text-textDim hover:text-textMuted'} cursor-pointer transition-colors">memory/store.py</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Editor + Terminal -->
+          <div class="lg:col-span-6 border-b lg:border-b-0 lg:border-r border-border flex flex-col">
+            <div class="p-4 bg-bg/80 font-mono text-[12px] leading-relaxed overflow-x-auto code-scroll flex-1 min-h-[180px]">
+              ${p.code.map((segs,i) => `
+                <div class="flex gap-3 hover:bg-white/[0.02] rounded px-1 -mx-1 group">
+                  <span class="text-textDim select-none w-5 text-right shrink-0 group-hover:text-textMuted transition-colors">${i+1}</span>
+                  <span class="whitespace-pre">${renderCodeLine(segs)}</span>
+                </div>`).join('')}
+            </div>
+            <div class="border-t border-border bg-surface/80 p-3.5 font-mono text-[11px] space-y-1">
+              <div class="text-[10px] uppercase tracking-widest text-textDim mb-1.5 font-semibold">Terminal</div>
+              ${p.terminal.map((t,i) => `<div class="${p.termColors[i]||'text-textMuted'}">${e(t)}</div>`).join('')}
+            </div>
+          </div>
+
+          <!-- Agent Inspector -->
+          <div class="lg:col-span-3 p-4 bg-surface/50 flex flex-col gap-4">
+            <div class="space-y-3 flex-1">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-semibold text-textMain leading-tight">${e(p.agentTitle)}</span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border ${p.statusColor}">${e(p.agentStatus)}</span>
+              </div>
+              <div class="p-3 rounded-lg bg-bg/80 border border-border text-xs text-textMuted leading-relaxed">
+                ${e(p.agentMsg)}
+              </div>
+              <div class="pt-2 border-t border-border space-y-2">
+                <div class="text-[10px] uppercase tracking-widest text-textDim font-semibold">Properties</div>
+                ${p.props.map(([k,v]) => `
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="text-textDim">${e(k)}</span>
+                    <span class="font-mono text-textMain text-[11px]">${e(v)}</span>
+                  </div>`).join('')}
+              </div>
+            </div>
+            <button type="button" data-nav="docs"
+              class="w-full py-2 rounded-lg bg-elevated border border-borderStrong hover:border-accent/50 text-xs font-semibold text-textSub transition-all hover:text-textMain">
+              Read ${e(p.label)} Guide →
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    /* ─────────── HOME ─────────── */
+    function renderHome() {
+      const latest = getLatestRelease();
+      const vLabel = latest
+        ? `${latest.tag_name} · Released ${new Date(latest.published_at).toLocaleDateString()}`
+        : `OmniDev · ${APP_STATE.content.fallbackVersion}`;
+
+      const stats = APP_STATE.github.repo ? [
+        { label: 'GitHub Stars',   value: (APP_STATE.github.repo.stargazers_count||0).toLocaleString(), icon: '⭐' },
+        { label: 'Open Forks',     value: (APP_STATE.github.repo.forks_count||0).toLocaleString(),         icon: '🔀' },
+        { label: 'License',        value: APP_STATE.github.repo.license?.spdx_id || 'Open Source',          icon: '⚖️' },
+        { label: 'Latest Release', value: latest?.tag_name || 'main-dev',                                   icon: '🚀' },
+      ] : null;
+
+      return `
+        <section class="pt-2 pb-12 sm:pt-6 sm:pb-16 text-center space-y-8">
+          <div class="max-w-3xl mx-auto space-y-7">
+            <div class="hero-anim">
+              <button type="button" data-nav="updates"
+                class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accentSoft border border-borderGlow hover:border-accent/40 text-xs font-mono text-accent/90 transition-all group">
+                <span class="w-1.5 h-1.5 rounded-full ${latest ? 'bg-accent animate-pulse2' : 'bg-amber'}"></span>
+                <span>${e(vLabel)}</span>
+                <span class="text-accent/60 group-hover:translate-x-0.5 transition-transform">→</span>
+              </button>
+            </div>
+
+            <h1 class="hero-anim text-4xl sm:text-5xl md:text-[3.6rem] font-extrabold tracking-tight leading-[1.06] gradient-text">
+              ${e(APP_STATE.content.heroTitle)}
+            </h1>
+
+            <p class="hero-anim text-base sm:text-lg text-textMuted max-w-2xl mx-auto leading-relaxed">
+              ${e(APP_STATE.content.heroSubtitle)}
+            </p>
+
+            <div class="hero-anim flex flex-wrap items-center justify-center gap-3">
+              <button type="button" data-nav="download"
+                class="shimmer-btn px-6 py-2.5 rounded-lg text-white text-sm font-semibold transition-all shadow-glow-blue hover:shadow-glow-blue-lg">
+                Download OmniDev ›
+              </button>
+              <a href="${REPO_URL}" target="_blank" rel="noopener noreferrer"
+                class="px-6 py-2.5 rounded-lg bg-surface border border-border hover:border-borderStrong text-textSub text-sm font-medium transition-all">
+                <span class="inline-flex items-center gap-2">
+                  <svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                  View on GitHub
+                </span>
+              </a>
+              <button type="button" data-nav="docs"
+                class="px-6 py-2.5 rounded-lg bg-transparent border border-border hover:border-borderStrong text-textMuted text-sm font-medium transition-all">
+                Read Docs
+              </button>
+            </div>
+          </div>
+
+          <!-- Stats Row (if GitHub data available) -->
+          ${stats ? `
+          <div class="hero-anim grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto">
+            ${stats.map(s => `
+              <div class="stat-card p-4 rounded-xl bg-surface border border-border text-center">
+                <div class="text-xl mb-1">${s.icon}</div>
+                <div class="stat-number text-base font-bold text-textMain">${e(s.value)}</div>
+                <div class="text-[10px] text-textDim uppercase tracking-wider mt-0.5">${e(s.label)}</div>
+              </div>`).join('')}
+          </div>` : ''}
+
+          <!-- Showcase Window -->
+          <div class="showcase-perspective mt-10 sm:mt-14 max-w-5xl mx-auto hero-anim">
+            <div id="hero-showcase-frame" class="rounded-2xl border border-borderStrong/80 bg-surface/90 overflow-hidden shadow-glow-blue-lg">
+              <div id="showcase-window-inner">${renderShowcaseInner()}</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─── Feature Cards ─── -->
+        <section class="py-14 border-t border-border">
+          <div class="text-center max-w-2xl mx-auto mb-12 scroll-reveal">
+            <div class="text-xs font-mono text-accent/70 uppercase tracking-widest mb-3">Core Modes</div>
+            <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-textMain mb-3">Built for autonomous control.</h2>
+            <p class="text-sm text-textMuted leading-relaxed">Four modes engineered to keep you in command of every file edit, model call, and terminal command.</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            ${[
+              { num:'01', key:'automode', label:'AutoMode', emoji:'⚡', desc:'Delegate multi-file edits and test runs with configurable approval gates before destructive commands execute.' },
+              { num:'02', key:'omnimode', label:'OmniMode', emoji:'🌐', desc:'Switch seamlessly between local Ollama models and cloud LLM providers inside one unified workbench.' },
+              { num:'03', key:'teachmode', label:'Teach Mode', emoji:'📖', desc:'Step-by-step guided explanations of architecture, diffs, and runtime behavior as you build.' },
+              { num:'04', key:'agents', label:'AI Agents', emoji:'🤖', desc:'Task-oriented coding agents backed by SQLite project memory, integrated terminal, and file management.' },
+            ].map(f => `
+              <div class="scroll-card feature-card p-5 rounded-xl bg-surface border border-border cursor-pointer group" data-feature-mode="${f.key}">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="text-2xl">${f.emoji}</div>
+                  <div class="text-[10px] font-mono text-textDim">${f.num}</div>
+                </div>
+                <h3 class="text-sm font-semibold text-textMain mb-2 group-hover:text-accent transition-colors">${f.label}</h3>
+                <p class="text-xs text-textMuted leading-relaxed">${f.desc}</p>
+                <div class="mt-4 text-[11px] text-accent/70 font-mono opacity-0 group-hover:opacity-100 transition-opacity">View demo →</div>
+              </div>`).join('')}
+          </div>
+        </section>
+
+        <!-- ─── Tech Stack ─── -->
+        <section class="py-10 border-t border-border scroll-reveal">
+          <div class="text-center mb-8">
+            <div class="text-xs font-mono text-textDim uppercase tracking-widest mb-2">Built With</div>
+            <h2 class="text-xl font-bold text-textMain">A modern, open-source stack.</h2>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            ${[
+              { name:'Tauri 2', desc:'Native desktop shell', badge:'Rust', color:'text-amber' },
+              { name:'React + TS', desc:'Workbench UI layer', badge:'Frontend', color:'text-blue-400' },
+              { name:'FastAPI', desc:'Local Python backend', badge:'Python', color:'text-green-400' },
+              { name:'SQLite', desc:'Persistent local store', badge:'WAL Mode', color:'text-purple' },
+            ].map(t => `
+              <div class="p-5 rounded-xl bg-surface border border-border hover:border-borderStrong transition-all group">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-sm font-semibold text-textMain group-hover:${t.color} transition-colors">${t.name}</span>
+                  <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-elevated border border-border ${t.color}">${t.badge}</span>
+                </div>
+                <p class="text-xs text-textMuted">${t.desc}</p>
+              </div>`).join('')}
+          </div>
+        </section>
+
+        <!-- ─── CTA Strip ─── -->
+        <section class="py-10 border-t border-border grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="scroll-card feature-card p-6 rounded-xl bg-surface border border-border flex flex-col justify-between gap-4">
+            <div>
+              <div class="text-xs font-mono text-accent/70 uppercase tracking-widest mb-2">Open Source</div>
+              <h3 class="text-base font-bold text-textMain mb-2">Inspect the full source</h3>
+              <p class="text-xs text-textMuted leading-relaxed">FastAPI backend, React workbench, and Tauri 2 desktop configuration — all public on GitHub.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <a href="${REPO_URL}" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg bg-elevated border border-borderStrong hover:border-accent/40 text-xs font-medium text-textSub transition-all">github.com/notgamermx/omnidev ↗</a>
+              <button type="button" data-nav="updates" class="px-4 py-2 rounded-lg bg-bg border border-border hover:border-borderStrong text-xs font-medium text-textMuted hover:text-textSub transition-all">Release History</button>
+            </div>
+          </div>
+          <div class="scroll-card feature-card p-6 rounded-xl bg-surface border border-border flex flex-col justify-between gap-4">
+            <div>
+              <div class="text-xs font-mono text-purple/70 uppercase tracking-widest mb-2">Community</div>
+              <h3 class="text-base font-bold text-textMain mb-2">Report, propose, and contribute</h3>
+              <p class="text-xs text-textMuted leading-relaxed">File bug reports, propose new agent tools, or review our responsible security disclosure policy.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" data-nav="community" class="px-4 py-2 rounded-lg bg-elevated border border-borderStrong hover:border-accent/40 text-xs font-medium text-textSub transition-all">Submit Feedback</button>
+              <button type="button" data-nav="security" class="px-4 py-2 rounded-lg bg-bg border border-border hover:border-borderStrong text-xs font-medium text-textMuted hover:text-textSub transition-all">Security Policy</button>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    /* ─────────── DOWNLOAD ─────────── */
+    function renderDownload() {
+      const latest = getLatestRelease();
+      const assets = latest?.assets || [];
+      const platform = APP_STATE.downloadPlatform;
+      const platDef = {
+        windows: { title: 'Windows (x64)',              icon:'🪟', ext:'.exe / .msi',                   cmd:'winget install OmniDev  •  or run the installer from GitHub Releases' },
+        linux:   { title: 'Linux (x64)',                icon:'🐧', ext:'.AppImage / .deb',               cmd:'chmod +x OmniDev_*.AppImage && ./OmniDev_*.AppImage' },
+        macos:   { title: 'macOS (Universal)',          icon:'🍎', ext:'.dmg',                           cmd:'Open OmniDev.dmg → drag to Applications' },
+        source:  { title: 'Build from Source / CLI',   icon:'🔧', ext:'Git + Node + Python + Rust',     cmd:`git clone ${REPO_URL}.git && cd omnidev\npip install -r requirements.txt\nnpm install && npm run dev` }
+      };
+      const matchingAssets = assets.filter(a => {
+        const n = a.name.toLowerCase();
+        if (platform==='windows') return n.endsWith('.exe')||n.endsWith('.msi')||n.includes('win');
+        if (platform==='linux')   return n.endsWith('.appimage')||n.endsWith('.deb')||n.includes('linux');
+        if (platform==='macos')   return n.endsWith('.dmg')||n.includes('mac')||n.includes('darwin');
+        return false;
+      });
+
+      return `
+        <div class="space-y-8">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-6">
+            <div>
+              <div class="text-xs font-mono text-accent/70 uppercase tracking-widest mb-1">Distribution</div>
+              <h1 class="text-2xl font-bold text-textMain">Download OmniDev</h1>
+              <p class="text-sm text-textMuted mt-1">Synced with <a href="${REPO_URL}/releases" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline font-mono">github.com/${REPO_OWNER}/${REPO_NAME}/releases</a></p>
+            </div>
+            <button id="refresh-releases-btn" type="button"
+              class="self-start px-4 py-2 rounded-lg bg-surface border border-borderStrong hover:border-accent/50 text-xs font-semibold text-textSub transition-all flex items-center gap-2 ${APP_STATE.github.loading?'opacity-60':'' }">
+              ${APP_STATE.github.loading ? '<svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Refreshing…' : '↻ Refresh from GitHub'}
+            </button>
+          </div>
+
+          <!-- Release info card -->
+          <div class="p-5 rounded-xl bg-surface border border-border flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-accentSoft border border-borderGlow flex items-center justify-center text-xl">🚀</div>
+              <div>
+                <div class="text-xs text-textMuted mb-0.5">Latest Stable Release</div>
+                <div class="font-mono text-sm font-bold text-accent">
+                  ${latest ? e(latest.tag_name) : 'No published release yet'}
+                </div>
+              </div>
+            </div>
+            ${latest ? `<div class="text-xs text-textMuted">Published ${new Date(latest.published_at).toLocaleDateString()}</div>` : ''}
+            ${APP_STATE.github.error ? `<p class="w-full text-xs text-amber flex items-center gap-2"><span>⚠</span> ${e(APP_STATE.github.error)} — Use source download below.</p>` : ''}
+            ${!latest && !APP_STATE.github.loading ? `<p class="w-full text-xs text-textMuted">No binary releases published yet. Use the Source / CLI tab to run OmniDev locally, or publish a tag on GitHub to populate installers automatically.</p>` : ''}
+          </div>
+
+          <!-- Platform tabs -->
+          <div class="flex flex-wrap gap-2">
+            ${Object.keys(platDef).map(p => `
+              <button type="button" data-dl-platform="${p}"
+                class="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold border transition-all ${platform===p ? 'tab-active' : 'bg-surface border-border text-textMuted hover:text-textMain hover:border-borderStrong'}">
+                <span>${platDef[p].icon}</span> ${platDef[p].title}
+              </button>`).join('')}
+          </div>
+
+          <!-- Asset list / source -->
+          <div class="p-6 rounded-xl bg-surface border border-border space-y-5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h2 class="text-base font-bold text-textMain flex items-center gap-2">
+                <span>${platDef[platform].icon}</span> ${platDef[platform].title}
+              </h2>
+              <span class="font-mono text-xs text-textDim px-2 py-0.5 rounded bg-elevated border border-border">${platDef[platform].ext}</span>
+            </div>
+
+            ${platform !== 'source' ? `
+              ${matchingAssets.length > 0 ? `
+                <div class="space-y-2">
+                  ${matchingAssets.map(a => `
+                    <div class="flex flex-wrap items-center justify-between gap-3 p-4 rounded-lg bg-bg border border-border hover:border-borderStrong transition-all">
+                      <div>
+                        <div class="font-mono text-sm text-textMain">${e(a.name)}</div>
+                        <div class="text-[11px] text-textDim mt-0.5">${(a.size/(1024*1024)).toFixed(2)} MB · Downloads: ${a.download_count.toLocaleString()}</div>
+                      </div>
+                      <a href="${a.browser_download_url}" target="_blank" rel="noopener noreferrer"
+                        class="px-4 py-2 rounded-lg shimmer-btn text-white text-xs font-semibold shadow-glow-blue">Download</a>
+                    </div>`).join('')}
+                </div>
+              ` : `
+                <div class="p-5 rounded-lg bg-bg border border-border text-xs text-textMuted space-y-2">
+                  <div class="flex items-center gap-2">
+                    <span class="text-amber">⚠</span>
+                    <span>No pre-built <span class="font-mono text-textSub">${platDef[platform].ext}</span> assets on the latest release.</span>
+                  </div>
+                  <a href="${REPO_URL}/releases" target="_blank" rel="noopener noreferrer" class="inline-block text-accent hover:underline">View all GitHub Releases →</a>
+                </div>`}
+            ` : `
+              <div class="space-y-4">
+                <p class="text-xs text-textMuted leading-relaxed">Clone the repository and launch both the FastAPI backend and React/Tauri frontend:</p>
+                ${[
+                  `git clone ${REPO_URL}.git && cd omnidev`,
+                  'pip install -r requirements.txt',
+                  'npm install && npm run dev',
+                ].map(cmd => `
+                  <div class="code-block p-4 flex items-center justify-between gap-3 group">
+                    <code class="text-sm text-green-400 font-mono flex-1 overflow-x-auto">$ ${e(cmd)}</code>
+                    <button type="button" data-copy="${e(cmd)}"
+                      class="px-2.5 py-1 rounded bg-elevated border border-border text-[11px] text-textDim hover:text-textMain shrink-0 opacity-0 group-hover:opacity-100 transition-all">Copy</button>
+                  </div>`).join('')}
+              </div>`}
+
+            <div class="pt-4 border-t border-border">
+              <div class="text-xs font-semibold text-textSub mb-2">📋 Verification &amp; Install Note</div>
+              <div class="code-block p-4 text-xs text-textMuted font-mono whitespace-pre-wrap">${e(platDef[platform].cmd)}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /* ─────────── UPDATES ─────────── */
+    function renderUpdates() {
+      const ghReleases = APP_STATE.github.releases || [];
+      const customReleases = APP_STATE.content.customReleases || [];
+      const allReleases = [
+        ...customReleases.map(r => ({ tag: r.version, date: r.date, body: r.notes.join('\n'), source: 'Admin CMS', url: `${REPO_URL}/releases` })),
+        ...ghReleases.map(r => ({ tag: r.tag_name, date: r.published_at ? new Date(r.published_at).toLocaleDateString() : '—', body: r.body||'No changelog body provided.', source: 'GitHub', url: r.html_url }))
+      ];
+      const filter = APP_STATE.roadmapFilter;
+      const roadmap = APP_STATE.content.roadmap.filter(item => filter==='all' || item.status===filter);
+      const statusStyle = {
+        completed:   { badge:'text-success border-success/30 bg-successSoft', dot:'bg-success', label:'Completed' },
+        'in-progress':{ badge:'text-amber border-amber/30 bg-amberSoft',      dot:'bg-amber',   label:'In Progress' },
+        planned:     { badge:'text-textDim border-border bg-elevated',        dot:'bg-border',  label:'Planned' },
+      };
+
+      return `
+        <div class="space-y-12">
+          <div class="border-b border-border pb-6">
+            <div class="text-xs font-mono text-accent/70 uppercase tracking-widest mb-1">Changelog</div>
+            <h1 class="text-2xl font-bold text-textMain">Updates &amp; Roadmap</h1>
+            <p class="text-sm text-textMuted mt-1">Track published versions from GitHub Releases and upcoming features managed via Admin CMS.</p>
+          </div>
+
+          <section class="space-y-5">
+            <div class="flex items-center justify-between gap-3">
+              <h2 class="text-lg font-bold text-textMain">Release History</h2>
+              <button type="button" id="updates-open-cms"
+                class="text-xs text-accent hover:text-blue-400 transition-colors flex items-center gap-1 font-medium">
+                <span>+</span> Add Release in CMS
+              </button>
+            </div>
+            ${allReleases.length > 0 ? `
+              <div class="space-y-4">
+                ${allReleases.map(rel => `
+                  <article class="p-5 rounded-xl bg-surface border border-border hover:border-borderStrong transition-all group space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                      <div class="flex items-center gap-3">
+                        <span class="font-mono text-base font-bold text-accent">${e(rel.tag)}</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-elevated border border-border text-textDim">${e(rel.source)}</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-xs text-textDim">${e(rel.date)}</span>
+                        <a href="${rel.url}" target="_blank" rel="noopener noreferrer" class="text-[11px] text-accent/70 hover:text-accent transition-colors hidden group-hover:block">View on GitHub ↗</a>
+                      </div>
+                    </div>
+                    <pre class="text-xs text-textMuted font-sans whitespace-pre-wrap leading-relaxed border-t border-border pt-3">${e(rel.body)}</pre>
+                  </article>`).join('')}
+              </div>
+            ` : `
+              <div class="p-6 rounded-xl bg-surface border border-border text-center space-y-3">
+                <div class="text-3xl">📭</div>
+                <p class="text-sm text-textMuted">No releases found on <a href="${REPO_URL}/releases" target="_blank" class="text-accent hover:underline">GitHub Releases</a> yet.</p>
+                <button type="button" id="updates-open-cms-empty" class="text-xs text-accent hover:underline font-medium">Use Admin CMS to draft release notes →</button>
+              </div>`}
+          </section>
+
+          <section class="space-y-5 border-t border-border pt-10">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <h2 class="text-lg font-bold text-textMain">Product Roadmap</h2>
+              <div class="flex flex-wrap gap-1.5">
+                ${['all','planned','in-progress','completed'].map(st => `
+                  <button type="button" data-roadmap-filter="${st}"
+                    class="px-3 py-1.5 rounded-full text-[11px] font-semibold border capitalize transition-all ${filter===st ? 'bg-accent border-accent/50 text-white' : 'bg-surface border-border text-textMuted hover:text-textMain hover:border-borderStrong'}">
+                    ${st.replace('-',' ')}
+                  </button>`).join('')}
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              ${roadmap.map(item => {
+                const st = statusStyle[item.status] || statusStyle.planned;
+                return `
+                  <div class="p-5 rounded-xl bg-surface border border-border hover:border-borderStrong transition-all">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                      <div class="flex items-start gap-2.5">
+                        <span class="w-2 h-2 rounded-full ${st.dot} mt-1.5 shrink-0"></span>
+                        <h3 class="text-sm font-semibold text-textMain leading-snug">${e(item.title)}</h3>
+                      </div>
+                      <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border shrink-0 ${st.badge}">${st.label}</span>
+                    </div>
+                    <p class="text-xs text-textMuted leading-relaxed pl-4">${e(item.desc)}</p>
+                  </div>`;
+              }).join('')}
+            </div>
+          </section>
+        </div>
+      `;
+    }
+
+    /* ─────────── DOCS ─────────── */
+    const DOCS_DATA = {
+      install: {
+        icon:'⬇️', title:'Installation & Quick Start',
+        body:'OmniDev runs as a Tauri 2 desktop application backed by a Python FastAPI + SQLite server and a React + TypeScript workbench.',
+        code:`# 1. Clone\ngit clone ${REPO_URL}.git\ncd omnidev\n\n# 2. Backend\npip install -r requirements.txt\npython -m uvicorn backend.main:app --reload\n\n# 3. Frontend\nnpm install && npm run dev`
+      },
+      providers: {
+        icon:'🔌', title:'Provider Configuration',
+        body:'Configure local Ollama endpoints or external LLM API keys in your workspace settings. Credentials stay local to your machine.',
+        code:`{\n  "default_provider": "ollama",\n  "ollama_base_url": "http://localhost:11434",\n  "models": ["qwen2.5-coder:7b", "llama3.1:8b"],\n  "cloud_fallback": "openai"\n}`
+      },
+      automode: {
+        icon:'⚡', title:'AutoMode & Tool Permissions',
+        body:'AutoMode enables autonomous multi-step file edits and command execution while enforcing explicit user-approval gates on destructive or shell actions.',
+        code:`# .omnidev/permissions.yaml\nfile_read:   allow\nfile_edit:   allow_with_diff\nshell_exec:  ask_always\nnet_request: deny`
+      },
+      omnimode: {
+        icon:'🌐', title:'OmniMode Workbench',
+        body:'OmniMode unifies file exploration, code editing, integrated PTY terminal, and persistent project memory in a single 4-panel layout.',
+        code:`# Launch OmniMode in current repo\nomnidev open .\n\n# Or via CLI shorthand\nomnidev --mode omni .`
+      },
+      teachmode: {
+        icon:'📖', title:'Teach Mode',
+        body:'Teach Mode pairs repository changes with structured explanations so you can inspect why a pattern, query, or component was written a certain way.',
+        code:`# Guided walkthrough on a file\nomnidev teach src/components/ProjectLauncherModal.tsx\n\n# With checkpoint pauses\nomnidev teach --step backend/agent_runner.py`
+      },
+      agents: {
+        icon:'🤖', title:'AI Agents & Memory',
+        body:'Agents maintain persistent SQLite-backed project memory, track conversation turns, and coordinate via a task queue with Planner and Verifier roles.',
+        code:`# Check active agent tasks\nomnidev tasks list\n\n# Queue a new agent task\nomnidev tasks add "Refactor auth middleware"`
+      }
+    };
+
+    function renderDocs() {
+      const q = APP_STATE.docsSearch.toLowerCase();
+      const keys = Object.keys(DOCS_DATA).filter(k =>
+        !q || DOCS_DATA[k].title.toLowerCase().includes(q) || DOCS_DATA[k].body.toLowerCase().includes(q)
+      );
+      const activeKey = DOCS_DATA[APP_STATE.docsSection] ? APP_STATE.docsSection : 'install';
+      const active = DOCS_DATA[activeKey];
+      return `
+        <div class="space-y-8">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-6">
+            <div>
+              <div class="text-xs font-mono text-accent/70 uppercase tracking-widest mb-1">Reference</div>
+              <h1 class="text-2xl font-bold text-textMain">Documentation</h1>
+              <p class="text-sm text-textMuted mt-1">Setup guides, provider configuration, and mode references.</p>
+            </div>
+            <div class="relative">
+              <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-textDim" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19A8 8 0 103 11a8 8 0 008 8z"/>
+              </svg>
+              <input id="docs-search-input" type="search" value="${e(APP_STATE.docsSearch)}"
+                placeholder="Filter docs…"
+                class="w-full sm:w-72 pl-9 pr-3 py-2.5 rounded-lg bg-surface border border-border text-sm text-textMain focus:outline-none focus:border-accent focus:ring-1 focus:ring-accentGlow transition-all" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <aside class="md:col-span-3 space-y-1">
+              ${keys.map(k => `
+                <button type="button" data-doc-key="${k}"
+                  class="w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium transition-all flex items-center gap-2 ${activeKey===k ? 'bg-elevated border border-borderStrong text-textMain' : 'text-textMuted hover:text-textMain hover:bg-surface'}">
+                  <span>${DOCS_DATA[k].icon}</span>
+                  <span>${e(DOCS_DATA[k].title)}</span>
+                </button>`).join('')}
+              ${keys.length===0 ? `<div class="text-xs text-textDim px-3 py-2">No matching sections.</div>` : ''}
+            </aside>
+
+            <section class="md:col-span-9 p-6 rounded-xl bg-surface border border-border space-y-5">
+              <div class="flex items-center gap-3">
+                <span class="text-2xl">${active.icon}</span>
+                <h2 class="text-xl font-bold text-textMain">${e(active.title)}</h2>
+              </div>
+              <p class="text-sm text-textMuted leading-relaxed">${e(active.body)}</p>
+              <div class="code-block relative group">
+                <div class="flex items-center justify-between px-4 py-2.5 border-b border-border">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-danger/60"></span>
+                    <span class="w-2 h-2 rounded-full bg-amber/60"></span>
+                    <span class="w-2 h-2 rounded-full bg-success/60"></span>
+                  </div>
+                  <button type="button" data-copy="${e(active.code)}"
+                    class="px-2.5 py-1 rounded bg-elevated border border-border text-[11px] text-textDim hover:text-textMain transition-all opacity-0 group-hover:opacity-100">
+                    Copy
+                  </button>
+                </div>
+                <pre class="p-4 text-xs text-green-400 overflow-x-auto code-scroll font-mono leading-relaxed">${e(active.code)}</pre>
+              </div>
+              <div class="pt-4 border-t border-border flex flex-wrap gap-2">
+                <a href="${REPO_URL}" target="_blank" rel="noopener noreferrer" class="text-xs text-accent hover:underline">View full source on GitHub →</a>
+              </div>
+            </section>
+          </div>
+        </div>
+      `;
+    }
+
+    /* ─────────── LICENSE ─────────── */
+    function renderLicense() {
+      const repoLic = APP_STATE.github.repo?.license?.name || 'See LICENSE in GitHub repository';
+      return `
+        <div class="space-y-8 max-w-4xl">
+          <div class="border-b border-border pb-6">
+            <div class="text-xs font-mono text-accent/70 uppercase tracking-widest mb-1">Legal</div>
+            <h1 class="text-2xl font-bold text-textMain">Copyright &amp; License</h1>
+            <p class="text-sm text-textMuted mt-1">Project ownership, software licensing, third-party notices, and trademark policy.</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="p-6 rounded-xl bg-surface border border-border space-y-3">
+              <div class="text-2xl">⚖️</div>
+              <h2 class="text-sm font-bold text-textMain">Project Ownership &amp; License</h2>
+              <p class="text-xs text-textMuted leading-relaxed">OmniDev is maintained by <code class="font-mono text-textSub">${REPO_OWNER}</code>.</p>
+              <div class="font-mono text-sm font-bold text-accent">${e(repoLic)}</div>
+              <a href="${REPO_URL}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs text-accent hover:underline">View LICENSE on GitHub →</a>
+            </div>
+            <div class="p-6 rounded-xl bg-surface border border-border space-y-3">
+              <div class="text-2xl">™</div>
+              <h2 class="text-sm font-bold text-textMain">Trademark &amp; Attribution</h2>
+              <p class="text-xs text-textMuted leading-relaxed">The OmniDev name and wordmark identify the official releases from <code class="font-mono text-xs">github.com/notgamermx/omnidev</code>. Forks must clearly state modifications and attribute upstream authors.</p>
+            </div>
+          </div>
+          <div class="p-6 rounded-xl bg-surface border border-border space-y-4">
+            <h2 class="text-sm font-bold text-textMain">Third-Party Open-Source Notices</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              ${[
+                { name:'Tauri 2',          desc:'Desktop application framework',  lic:'MIT / Apache 2.0' },
+                { name:'React & TypeScript', desc:'Workbench UI layer',             lic:'MIT' },
+                { name:'FastAPI',           desc:'Local Python API backend',        lic:'MIT' },
+                { name:'SQLite',            desc:'Persistent local storage',        lic:'Public Domain' },
+                { name:'GSAP',              desc:'Animation library (Free tier)',    lic:'Standard' },
+                { name:'Tailwind CSS',      desc:'Utility CSS framework',           lic:'MIT' },
+              ].map(t => `
+                <div class="p-3.5 rounded-lg bg-bg border border-border flex items-start justify-between gap-2">
+                  <div>
+                    <div class="font-semibold text-textSub">${t.name}</div>
+                    <div class="text-textDim mt-0.5">${t.desc}</div>
+                  </div>
+                  <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-elevated border border-border text-textDim shrink-0">${t.lic}</span>
+                </div>`).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /* ─────────── SECURITY ─────────── */
+    function renderSecurity() {
+      return `
+        <div class="space-y-8 max-w-4xl">
+          <div class="border-b border-border pb-6">
+            <div class="text-xs font-mono text-danger/70 uppercase tracking-widest mb-1">Safety</div>
+            <h1 class="text-2xl font-bold text-textMain">Security Policy &amp; Reporting</h1>
+            <p class="text-sm text-textMuted mt-1">Responsible vulnerability disclosure and execution boundary guidelines.</p>
+          </div>
+          <div class="p-5 rounded-xl bg-dangerSoft border border-danger/20 flex gap-3">
+            <span class="text-xl shrink-0">⚠️</span>
+            <div class="text-xs text-textSub leading-relaxed">
+              <strong>Do not open public GitHub issues for unpatched security vulnerabilities.</strong>
+              Use GitHub Private Vulnerability Reporting at
+              <a href="${REPO_URL}/security" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline font-mono">github.com/${REPO_OWNER}/${REPO_NAME}/security</a>
+            </div>
+          </div>
+          <div class="p-6 rounded-xl bg-surface border border-border space-y-5">
+            <h2 class="text-base font-bold text-textMain">Response SLA</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              ${[
+                { label:'Acknowledgment',  val:'Within 48 hours',          icon:'📨' },
+                { label:'Triage & Severity', val:'Within 5 business days', icon:'🔎' },
+                { label:'Supported Branch', val:'Latest Stable / main',    icon:'🌿' },
+              ].map(x => `
+                <div class="p-4 rounded-lg bg-bg border border-border text-center">
+                  <div class="text-2xl mb-2">${x.icon}</div>
+                  <div class="text-[10px] text-textDim uppercase tracking-wider mb-1">${x.label}</div>
+                  <div class="font-mono text-sm text-textMain font-semibold">${x.val}</div>
+                </div>`).join('')}
+            </div>
+          </div>
+          <form id="security-report-form" class="p-6 rounded-xl bg-surface border border-border space-y-5">
+            <h2 class="text-base font-bold text-textMain">Draft Security Advisory Payload</h2>
+            <p class="text-xs text-textMuted">Compose your report here, then copy it to paste into GitHub's private advisory form.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <input id="sec-component" type="text" required placeholder="Affected component (e.g. AutoMode shell runner)"
+                class="px-3 py-2.5 rounded-lg bg-bg border border-border text-sm text-textMain focus:outline-none focus:border-accent transition-colors" />
+              <select id="sec-severity" class="px-3 py-2.5 rounded-lg bg-bg border border-border text-sm text-textMain focus:outline-none focus:border-accent transition-colors">
+                <option value="Critical">🔴 Severity: Critical</option>
+                <option value="High">🟠 Severity: High</option>
+                <option value="Medium" selected>🟡 Severity: Medium</option>
+                <option value="Low">🟢 Severity: Low</option>
+              </select>
+            </div>
+            <textarea id="sec-details" rows="4" required placeholder="Steps to reproduce, potential impact, and environment details…"
+              class="w-full px-3 py-2.5 rounded-lg bg-bg border border-border text-sm text-textMain focus:outline-none focus:border-accent transition-colors resize-none"></textarea>
+            <div class="flex flex-wrap items-center gap-3">
+              <button type="submit" class="px-5 py-2.5 rounded-lg bg-danger hover:bg-red-600 text-white text-xs font-bold transition-colors">
+                Generate &amp; Copy Report
+              </button>
+              <a href="${REPO_URL}/security/advisories/new" target="_blank" rel="noopener noreferrer"
+                class="text-xs text-accent hover:underline font-medium">Open GitHub Security Advisory →</a>
+            </div>
+          </form>
+        </div>
+      `;
+    }
+
+    /* ─────────── COMMUNITY ─────────── */
+    function renderCommunity() {
+      return `
+        <div class="space-y-8 max-w-4xl">
+          <div class="border-b border-border pb-6">
+            <div class="text-xs font-mono text-purple/70 uppercase tracking-widest mb-1">Community</div>
+            <h1 class="text-2xl font-bold text-textMain">Community &amp; Feedback</h1>
+            <p class="text-sm text-textMuted mt-1">Contribute code, join discussions, or file bug reports and feature requests.</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            ${[
+              { href:`${REPO_URL}`,            icon:'📦', title:'GitHub Repository', desc:'Source code, PRs & branches' },
+              { href:`${REPO_URL}/issues`,      icon:'🐛', title:'Issue Tracker',      desc:'Bugs & feature requests' },
+              { href:`${REPO_URL}/discussions`, icon:'💬', title:'Discussions',         desc:'Architecture & Q&A' },
+            ].map(c => `
+              <a href="${c.href}" target="_blank" rel="noopener noreferrer"
+                class="feature-card p-5 rounded-xl bg-surface border border-border flex flex-col gap-2 group">
+                <div class="text-2xl">${c.icon}</div>
+                <div class="text-sm font-semibold text-textMain group-hover:text-accent transition-colors">${c.title}</div>
+                <div class="text-xs text-textMuted">${c.desc}</div>
+              </a>`).join('')}
+          </div>
+          <form id="feedback-form" class="p-6 rounded-xl bg-surface border border-border space-y-5">
+            <h2 class="text-base font-bold text-textMain">Create &amp; Copy GitHub Issue Draft</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <select id="fb-type" class="px-3 py-2.5 rounded-lg bg-bg border border-border text-sm text-textMain focus:outline-none focus:border-accent transition-colors">
+                <option value="Bug Report">🐛 Bug Report</option>
+                <option value="Feature Request">✨ Feature Request</option>
+                <option value="General Feedback">💬 General Feedback</option>
+              </select>
+              <input id="fb-title" type="text" required placeholder="Short summary title"
+                class="px-3 py-2.5 rounded-lg bg-bg border border-border text-sm text-textMain focus:outline-none focus:border-accent transition-colors" />
+            </div>
+            <textarea id="fb-body" rows="4" required placeholder="Describe the issue or feature request in detail…"
+              class="w-full px-3 py-2.5 rounded-lg bg-bg border border-border text-sm text-textMain focus:outline-none focus:border-accent transition-colors resize-none"></textarea>
+            <button type="submit" class="px-5 py-2.5 rounded-lg bg-accent hover:bg-accentHover text-white text-xs font-bold transition-colors shadow-glow-blue">
+              Create &amp; Copy Markdown Draft
+            </button>
+          </form>
+          ${APP_STATE.feedbackList.length > 0 ? `
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase tracking-widest text-textDim">Session Drafts</h3>
+              ${APP_STATE.feedbackList.map((fb,i) => `
+                <div class="p-4 rounded-xl bg-surface border border-border flex items-center justify-between gap-3 text-xs hover:border-borderStrong transition-all">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="font-mono text-accent shrink-0">[${e(fb.type)}]</span>
+                    <span class="text-textSub font-medium truncate">${e(fb.title)}</span>
+                  </div>
+                  <button type="button" data-copy="${e(fb.markdown)}"
+                    class="px-2.5 py-1 rounded-lg bg-elevated border border-border hover:border-borderStrong text-textMuted hover:text-textMain shrink-0 transition-all">Copy Markdown</button>
+                </div>`).join('')}
+            </div>` : ''}
+        </div>
+      `;
+    }
+
+    /* ─────────── ABOUT ─────────── */
+    function renderAbout() {
+      const repo = APP_STATE.github.repo;
+      return `
+        <div class="space-y-8 max-w-4xl">
+          <div class="border-b border-border pb-6">
+            <div class="text-xs font-mono text-accent/70 uppercase tracking-widest mb-1">Project</div>
+            <h1 class="text-2xl font-bold text-textMain">About OmniDev</h1>
+            <p class="text-sm text-textMuted mt-1">An open-source AI development environment built for transparency, local control, and developer velocity.</p>
+          </div>
+          <div class="p-6 rounded-xl bg-surface border border-border space-y-4">
+            <h2 class="text-base font-bold text-textMain">Architecture</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              ${[
+                { layer:'Desktop Shell',  tech:'Tauri 2 + Rust',         desc:'Native window management, secure IPC, file system access, and PTY terminals.' },
+                { layer:'Frontend',       tech:'React 18 + TypeScript',   desc:'4-panel workbench: file explorer, Monaco editor, agent panel, integrated terminal.' },
+                { layer:'Backend',        tech:'FastAPI + SQLite',         desc:'Local REST + WebSocket API serving agent tools, project memory, and task queues.' },
+                { layer:'AI Layer',       tech:'Multi-provider LLM',       desc:'Pluggable provider router supporting Ollama (local) and cloud APIs with fallback logic.' },
+              ].map(a => `
+                <div class="p-4 rounded-lg bg-bg border border-border">
+                  <div class="flex items-center justify-between gap-2 mb-2">
+                    <span class="font-semibold text-textSub">${a.layer}</span>
+                    <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-elevated border border-border text-accent">${a.tech}</span>
+                  </div>
+                  <p class="text-textDim leading-relaxed">${a.desc}</p>
+                </div>`).join('')}
+            </div>
+          </div>
+          <div class="p-6 rounded-xl bg-surface border border-border space-y-4">
+            <h2 class="text-base font-bold text-textMain">Maintainer &amp; Contributors</h2>
+            <div class="flex flex-wrap items-center justify-between gap-4 p-4 rounded-lg bg-bg border border-border">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-purple flex items-center justify-center font-bold text-white text-sm">
+                  ${REPO_OWNER.slice(0,2).toUpperCase()}
+                </div>
+                <div>
+                  <div class="font-mono font-bold text-textMain text-sm">${REPO_OWNER}</div>
+                  <div class="text-xs text-textMuted">Creator &amp; Lead Maintainer</div>
+                </div>
+              </div>
+              <a href="${REPO_URL}/graphs/contributors" target="_blank" rel="noopener noreferrer"
+                class="px-4 py-2 rounded-lg bg-elevated border border-borderStrong hover:border-accent/50 text-xs font-semibold text-textSub transition-all">
+                View All Contributors →
+              </a>
+            </div>
+            ${repo ? `
+              <div class="grid grid-cols-3 gap-3 text-center text-xs">
+                <div class="p-3 rounded-lg bg-bg border border-border">
+                  <div class="font-bold text-base text-textMain">${(repo.stargazers_count||0).toLocaleString()}</div>
+                  <div class="text-textDim">Stars</div>
+                </div>
+                <div class="p-3 rounded-lg bg-bg border border-border">
+                  <div class="font-bold text-base text-textMain">${(repo.forks_count||0).toLocaleString()}</div>
+                  <div class="text-textDim">Forks</div>
+                </div>
+                <div class="p-3 rounded-lg bg-bg border border-border">
+                  <div class="font-bold text-base text-textMain">${(repo.open_issues_count||0).toLocaleString()}</div>
+                  <div class="text-textDim">Open Issues</div>
+                </div>
+              </div>` : ''}
+          </div>
+          <div class="p-6 rounded-xl bg-gradient-to-r from-accentSoft to-transparent border border-borderGlow space-y-3">
+            <h2 class="text-base font-bold text-textMain">🤝 Contributing</h2>
+            <p class="text-sm text-textMuted leading-relaxed">OmniDev welcomes contributions of all kinds — bug fixes, new provider integrations, agent tools, documentation, and design improvements.</p>
+            <div class="flex flex-wrap gap-3 pt-1">
+              <a href="${REPO_URL}/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg bg-accent hover:bg-accentHover text-white text-xs font-bold transition-colors">Contributing Guide</a>
+              <a href="${REPO_URL}/issues/new" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg bg-elevated border border-borderStrong hover:border-accent/50 text-xs font-semibold text-textSub transition-all">Open an Issue</a>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /* ─────────── GSAP ─────────── */
+    function initGsapAnimations() {
+      if (typeof window.gsap === 'undefined') return;
+      const gsap = window.gsap;
+      if (window.ScrollTrigger) {
+        gsap.registerPlugin(window.ScrollTrigger);
+        window.ScrollTrigger.getAll().forEach(t => t.kill());
+      }
+      if (APP_STATE.currentPage === 'home') {
+        gsap.from('.hero-anim', { y: 20, opacity: 0, duration: 0.6, stagger: 0.09, ease: 'power3.out', clearProps: 'all' });
+        const frame = document.getElementById('hero-showcase-frame');
+        if (frame && window.ScrollTrigger) {
+          gsap.fromTo(frame,
+            { rotateX: 6, scale: 0.97, y: 24 },
+            { rotateX: 0, scale: 1, y: 0, ease: 'power2.out',
+              scrollTrigger: { trigger: frame, start: 'top 88%', end: 'top 30%', scrub: 0.5 } }
+          );
+        }
+        document.querySelectorAll('.scroll-card, .scroll-reveal').forEach((el, i) => {
+          if (window.ScrollTrigger) {
+            gsap.from(el, { y: 24, opacity: 0, duration: 0.5, delay: (i%4)*0.05,
+              ease: 'power2.out', clearProps: 'all',
+              scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
+          }
+        });
+      }
+    }
+
+    /* ─────────── Demo loop ─────────── */
+    function startDemoLoop() {
+      stopDemoLoop();
+      if (!APP_STATE.demoPlaying || APP_STATE.currentPage !== 'home') return;
+      demoTimer = setInterval(() => {
+        if (!APP_STATE.demoPlaying || APP_STATE.currentPage !== 'home') return;
+        APP_STATE.demoProgress += 1.6;
+        if (APP_STATE.demoProgress >= 100) {
+          APP_STATE.demoProgress = 0;
+          APP_STATE.demoStepIdx = (APP_STATE.demoStepIdx + 1) % DEMO_ORDER.length;
+          APP_STATE.previewMode = DEMO_ORDER[APP_STATE.demoStepIdx];
+          updateShowcaseDom();
+        } else {
+          const bar = document.getElementById('demo-progress-bar');
+          if (bar) bar.style.width = `${APP_STATE.demoProgress}%`;
+        }
+      }, 80);
+    }
+
+    function stopDemoLoop() {
+      if (demoTimer) { clearInterval(demoTimer); demoTimer = null; }
+    }
+
+    function updateShowcaseDom() {
+      const c = document.getElementById('showcase-window-inner');
+      if (!c) return;
+      c.innerHTML = renderShowcaseInner();
+      bindShowcaseControls();
+    }
+
+    /* ─────────── Render ─────────── */
+    function renderPage() {
+      const main = document.getElementById('app-main');
+      const page = APP_STATE.currentPage;
+
+      // Update nav active states
+      document.querySelectorAll('.nav-link').forEach(btn => {
+        const isActive = btn.getAttribute('data-nav') === page;
+        if (isActive) {
+          btn.classList.add('active','text-textMain','bg-surface');
+          btn.classList.remove('text-textMuted');
+        } else {
+          btn.classList.remove('active','text-textMain','bg-surface');
+          btn.classList.add('text-textMuted');
+        }
+      });
+
+      const renders = { home:renderHome, download:renderDownload, updates:renderUpdates,
+                        docs:renderDocs, license:renderLicense, security:renderSecurity,
+                        community:renderCommunity, about:renderAbout };
+      main.innerHTML = `<div class="page-enter">${(renders[page]||renderHome)()}</div>`;
+      bindPageEvents();
+
+      if (page === 'home') { startDemoLoop(); initGsapAnimations(); }
+      else stopDemoLoop();
+    }
+
+    /* ─────────── Event binding ─────────── */
+    function bindShowcaseControls() {
+      document.querySelectorAll('[data-preview-mode]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          APP_STATE.previewMode = btn.getAttribute('data-preview-mode');
+          APP_STATE.demoStepIdx = DEMO_ORDER.indexOf(APP_STATE.previewMode);
+          APP_STATE.demoProgress = 0;
+          updateShowcaseDom();
+        });
+      });
+      const pt = document.getElementById('demo-play-toggle');
+      if (pt) pt.addEventListener('click', () => {
+        APP_STATE.demoPlaying = !APP_STATE.demoPlaying;
+        if (APP_STATE.demoPlaying) startDemoLoop(); else stopDemoLoop();
+        updateShowcaseDom();
+      });
+    }
+
+    function bindPageEvents() {
+      bindShowcaseControls();
+
+      document.querySelectorAll('[data-dl-platform]').forEach(btn =>
+        btn.addEventListener('click', () => { APP_STATE.downloadPlatform = btn.getAttribute('data-dl-platform'); renderPage(); }));
+
+      const rb = document.getElementById('refresh-releases-btn');
+      if (rb) rb.addEventListener('click', fetchGitHubData);
+
+      document.querySelectorAll('[data-roadmap-filter]').forEach(btn =>
+        btn.addEventListener('click', () => { APP_STATE.roadmapFilter = btn.getAttribute('data-roadmap-filter'); renderPage(); }));
+
+      const ucms = document.getElementById('updates-open-cms');
+      if (ucms) ucms.addEventListener('click', openCms);
+      const ucmsE = document.getElementById('updates-open-cms-empty');
+      if (ucmsE) ucmsE.addEventListener('click', openCms);
+
+      document.querySelectorAll('[data-doc-key]').forEach(btn =>
+        btn.addEventListener('click', () => { APP_STATE.docsSection = btn.getAttribute('data-doc-key'); renderPage(); }));
+
+      const ds = document.getElementById('docs-search-input');
+      if (ds) ds.addEventListener('input', ev => {
+        APP_STATE.docsSearch = ev.target.value;
+        renderPage();
+        const el = document.getElementById('docs-search-input');
+        if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+      });
+
+      document.querySelectorAll('[data-copy]').forEach(btn =>
+        btn.addEventListener('click', () => copyText(btn.getAttribute('data-copy'))));
+
+      // Feature card click -> show demo
+      document.querySelectorAll('[data-feature-mode]').forEach(card =>
+        card.addEventListener('click', () => {
+          APP_STATE.previewMode = card.getAttribute('data-feature-mode');
+          APP_STATE.demoStepIdx = DEMO_ORDER.indexOf(APP_STATE.previewMode);
+          APP_STATE.demoProgress = 0;
+          document.getElementById('hero-showcase-frame')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          updateShowcaseDom();
+        }));
+
+      const secForm = document.getElementById('security-report-form');
+      if (secForm) secForm.addEventListener('submit', ev => {
+        ev.preventDefault();
+        const comp = document.getElementById('sec-component').value.trim();
+        const sev  = document.getElementById('sec-severity').value;
+        const det  = document.getElementById('sec-details').value.trim();
+        const md   = `## Security Report — Severity: ${sev}\n**Component:** ${comp}\n\n**Details & Reproduction Steps:**\n${det}`;
+        copyText(md);
+        showToast('Security report copied to clipboard');
+      });
+
+      const fbForm = document.getElementById('feedback-form');
+      if (fbForm) fbForm.addEventListener('submit', ev => {
+        ev.preventDefault();
+        const type  = document.getElementById('fb-type').value;
+        const title = document.getElementById('fb-title').value.trim();
+        const body  = document.getElementById('fb-body').value.trim();
+        const md    = `### [${type}] ${title}\n\n${body}`;
+        APP_STATE.feedbackList.unshift({ type, title, markdown: md });
+        copyText(md);
+        showToast('Issue draft copied to clipboard');
+        renderPage();
+      });
+    }
+
+    /* ─────────── Navigation ─────────── */
+    function navigate(page) {
+      if (!PAGES.includes(page)) return;
+      APP_STATE.currentPage = page;
+      closeMobileNav();
+      window.location.hash = page;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      renderPage();
+    }
+
+    document.addEventListener('click', ev => {
+      const navBtn = ev.target.closest('[data-nav]');
+      if (navBtn) navigate(navBtn.getAttribute('data-nav'));
+    });
+
+    /* ─────────── Mobile Nav ─────────── */
+    let mobileOpen = false;
+    function closeMobileNav() {
+      mobileOpen = false;
+      const nav = document.getElementById('mobile-nav');
+      const btn = document.getElementById('mobile-menu-btn');
+      nav.classList.remove('open');
+      btn.setAttribute('aria-expanded','false');
+      document.getElementById('mobile-menu-icon-open').classList.remove('hidden');
+      document.getElementById('mobile-menu-icon-close').classList.add('hidden');
+    }
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+      mobileOpen = !mobileOpen;
+      const nav = document.getElementById('mobile-nav');
+      const btn = document.getElementById('mobile-menu-btn');
+      nav.classList.toggle('open', mobileOpen);
+      btn.setAttribute('aria-expanded', String(mobileOpen));
+      document.getElementById('mobile-menu-icon-open').classList.toggle('hidden', mobileOpen);
+      document.getElementById('mobile-menu-icon-close').classList.toggle('hidden', !mobileOpen);
+    });
+
+    /* ─────────── CMS ─────────── */
+    function openCms() {
+      document.getElementById('cms-announcement').value  = APP_STATE.content.announcement;
+      document.getElementById('cms-hero-title').value    = APP_STATE.content.heroTitle;
+      document.getElementById('cms-hero-subtitle').value = APP_STATE.content.heroSubtitle;
+      document.getElementById('cms-fallback-version').value = APP_STATE.content.fallbackVersion;
+      document.getElementById('cms-rel-date').value = new Date().toISOString().slice(0,10);
+      document.getElementById('cms-status-msg').textContent = '';
+      document.getElementById('cms-modal').classList.remove('hidden');
+      APP_STATE.cmsOpen = true;
+    }
+    function closeCms() {
+      document.getElementById('cms-modal').classList.add('hidden');
+      APP_STATE.cmsOpen = false;
+    }
+
+    document.getElementById('open-cms-top').addEventListener('click', openCms);
+    document.getElementById('open-cms-footer').addEventListener('click', openCms);
+    document.getElementById('close-cms-btn').addEventListener('click', closeCms);
+    document.getElementById('cms-backdrop').addEventListener('click', closeCms);
+
+    document.getElementById('cms-save-copy').addEventListener('click', () => {
+      APP_STATE.content.announcement  = document.getElementById('cms-announcement').value.trim()      || DEFAULT_CONTENT.announcement;
+      APP_STATE.content.heroTitle     = document.getElementById('cms-hero-title').value.trim()        || DEFAULT_CONTENT.heroTitle;
+      APP_STATE.content.heroSubtitle  = document.getElementById('cms-hero-subtitle').value.trim()     || DEFAULT_CONTENT.heroSubtitle;
+      APP_STATE.content.fallbackVersion = document.getElementById('cms-fallback-version').value.trim()|| DEFAULT_CONTENT.fallbackVersion;
+      saveContent(); updateHeaderBadges(); renderPage();
+      document.getElementById('cms-status-msg').textContent = '✓ Site copy saved.';
+      showToast('Site copy saved');
+    });
+
+    document.getElementById('cms-add-release').addEventListener('click', () => {
+      const version = document.getElementById('cms-rel-version').value.trim();
+      const date    = document.getElementById('cms-rel-date').value;
+      const notes   = document.getElementById('cms-rel-notes').value.split('\n').map(s=>s.trim()).filter(Boolean);
+      if (!version || !notes.length) { document.getElementById('cms-status-msg').textContent = '⚠ Enter a version and at least one changelog line.'; return; }
+      APP_STATE.content.customReleases.unshift({ version, date: date||'Today', notes });
+      saveContent(); updateHeaderBadges(); renderPage();
+      document.getElementById('cms-rel-version').value = '';
+      document.getElementById('cms-rel-notes').value   = '';
+      document.getElementById('cms-status-msg').textContent = `✓ Added ${version}.`;
+      showToast(`Release ${version} added`);
+    });
+
+    document.getElementById('cms-add-roadmap').addEventListener('click', () => {
+      const title  = document.getElementById('cms-road-title').value.trim();
+      const status = document.getElementById('cms-road-status').value;
+      const desc   = document.getElementById('cms-road-desc').value.trim();
+      if (!title) { document.getElementById('cms-status-msg').textContent = '⚠ Enter a feature title.'; return; }
+      APP_STATE.content.roadmap.unshift({ id:'r_'+Date.now(), title, desc: desc||'Scheduled in OmniDev roadmap.', status });
+      saveContent(); renderPage();
+      document.getElementById('cms-road-title').value = '';
+      document.getElementById('cms-road-desc').value  = '';
+      document.getElementById('cms-status-msg').textContent = `✓ Added "${title}".`;
+      showToast(`Roadmap item added`);
+    });
+
+    document.getElementById('cms-export-json').addEventListener('click', () => {
+      const str = JSON.stringify(APP_STATE.content, null, 2);
+      copyText(str);
+      const blob = new Blob([str], { type:'application/json' });
+      const url  = URL.createObjectURL(blob);
+      const a    = Object.assign(document.createElement('a'), { href:url, download:'omnidev-content.json' });
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      document.getElementById('cms-status-msg').textContent = '✓ Exported.';
+      showToast('Exported omnidev-content.json');
+    });
+
+    document.getElementById('cms-reset-defaults').addEventListener('click', () => {
+      if (!confirm('Reset all CMS content to defaults? This cannot be undone.')) return;
+      APP_STATE.content = JSON.parse(JSON.stringify(DEFAULT_CONTENT));
+      saveContent(); updateHeaderBadges(); openCms(); renderPage();
+      document.getElementById('cms-status-msg').textContent = '✓ Reset to defaults.';
+      showToast('Content reset to defaults', 'info');
+    });
+
+    /* ─────────── Command Palette ─────────── */
+    const CMD_ITEMS = [
+      { label:'Home',                   icon:'🏠', action: () => navigate('home') },
+      { label:'Download OmniDev',       icon:'⬇️', action: () => navigate('download') },
+      { label:'Updates & Roadmap',      icon:'🔄', action: () => navigate('updates') },
+      { label:'Documentation',          icon:'📖', action: () => navigate('docs') },
+      { label:'Copyright & License',    icon:'⚖️', action: () => navigate('license') },
+      { label:'Security Policy',        icon:'🔒', action: () => navigate('security') },
+      { label:'Community & Feedback',   icon:'💬', action: () => navigate('community') },
+      { label:'About OmniDev',          icon:'ℹ️', action: () => navigate('about') },
+      { label:'Open Admin CMS',         icon:'⚙️', action: () => openCms() },
+      { label:'View on GitHub',         icon:'📦', action: () => window.open('https://github.com/notgamermx/omnidev','_blank') },
+      { label:'AutoMode Demo',          icon:'⚡', action: () => { navigate('home'); setTimeout(() => { APP_STATE.previewMode='automode'; updateShowcaseDom(); }, 300); } },
+      { label:'OmniMode Demo',          icon:'🌐', action: () => { navigate('home'); setTimeout(() => { APP_STATE.previewMode='omnimode'; updateShowcaseDom(); }, 300); } },
+      { label:'Teach Mode Demo',        icon:'📖', action: () => { navigate('home'); setTimeout(() => { APP_STATE.previewMode='teachmode'; updateShowcaseDom(); }, 300); } },
+      { label:'AI Agents Demo',         icon:'🤖', action: () => { navigate('home'); setTimeout(() => { APP_STATE.previewMode='agents'; updateShowcaseDom(); }, 300); } },
+    ];
+
+    let cmdSelectedIdx = 0;
+    function openPalette() {
+      APP_STATE.cmdPaletteOpen = true;
+      document.getElementById('cmd-palette').classList.remove('hidden');
+      document.getElementById('cmd-search').value = '';
+      renderCmdResults('');
+      setTimeout(() => document.getElementById('cmd-search').focus(), 50);
+    }
+    function closePalette() {
+      APP_STATE.cmdPaletteOpen = false;
+      document.getElementById('cmd-palette').classList.add('hidden');
+    }
+    function renderCmdResults(q) {
+      const filtered = q ? CMD_ITEMS.filter(it => it.label.toLowerCase().includes(q.toLowerCase())) : CMD_ITEMS;
+      cmdSelectedIdx = 0;
+      const r = document.getElementById('cmd-results');
+      r.innerHTML = filtered.length > 0 ? filtered.map((it,i) => `
+        <button type="button" data-cmd-idx="${i}"
+          class="w-full text-left px-4 py-2.5 flex items-center gap-3 text-sm transition-colors ${i===0 ? 'bg-accentSoft text-textMain' : 'text-textMuted hover:bg-surface hover:text-textMain'}">
+          <span class="text-base w-5 text-center">${it.icon}</span>
+          <span>${e(it.label)}</span>
+        </button>`).join('') : `<div class="px-4 py-6 text-center text-xs text-textDim">No results for "${e(q)}"</div>`;
+      return filtered;
+    }
+
+    document.getElementById('cmd-palette-btn')?.addEventListener('click', openPalette);
+    document.getElementById('cmd-palette-backdrop').addEventListener('click', closePalette);
+
+    document.getElementById('cmd-search').addEventListener('input', ev => {
+      renderCmdResults(ev.target.value);
+    });
+    document.getElementById('cmd-results').addEventListener('click', ev => {
+      const btn = ev.target.closest('[data-cmd-idx]');
+      if (!btn) return;
+      const q = document.getElementById('cmd-search').value;
+      const filtered = q ? CMD_ITEMS.filter(it => it.label.toLowerCase().includes(q.toLowerCase())) : CMD_ITEMS;
+      const idx = parseInt(btn.getAttribute('data-cmd-idx'), 10);
+      if (filtered[idx]) { filtered[idx].action(); closePalette(); }
+    });
+
+    document.getElementById('cmd-search').addEventListener('keydown', ev => {
+      const q = document.getElementById('cmd-search').value;
+      const filtered = q ? CMD_ITEMS.filter(it => it.label.toLowerCase().includes(q.toLowerCase())) : CMD_ITEMS;
+      if (ev.key === 'ArrowDown')  { cmdSelectedIdx = Math.min(cmdSelectedIdx+1, filtered.length-1); }
+      else if (ev.key === 'ArrowUp') { cmdSelectedIdx = Math.max(cmdSelectedIdx-1, 0); }
+      else if (ev.key === 'Enter') { if (filtered[cmdSelectedIdx]) { filtered[cmdSelectedIdx].action(); closePalette(); } return; }
+      else if (ev.key === 'Escape') { closePalette(); return; }
+      else return;
+      const btns = document.querySelectorAll('#cmd-results [data-cmd-idx]');
+      btns.forEach((b,i) => {
+        b.classList.toggle('bg-accentSoft', i===cmdSelectedIdx);
+        b.classList.toggle('text-textMain', i===cmdSelectedIdx);
+        b.classList.toggle('text-textMuted', i!==cmdSelectedIdx);
+      });
+      btns[cmdSelectedIdx]?.scrollIntoView({ block:'nearest' });
+    });
+
+    /* ─────────── Global keyboard ─────────── */
+    document.addEventListener('keydown', ev => {
+      if ((ev.metaKey || ev.ctrlKey) && ev.key === 'k') { ev.preventDefault(); APP_STATE.cmdPaletteOpen ? closePalette() : openPalette(); }
+      if (ev.key === 'Escape') {
+        if (APP_STATE.cmdPaletteOpen) closePalette();
+        if (APP_STATE.cmsOpen) closeCms();
+      }
+    });
+
+    /* ─────────── Hash routing ─────────── */
+    window.addEventListener('hashchange', () => {
+      const h = window.location.hash.replace('#','');
+      if (PAGES.includes(h)) { APP_STATE.currentPage = h; renderPage(); }
+    });
+
+    /* ─────────── Init ─────────── */
+    const initHash = window.location.hash.replace('#','');
+    if (PAGES.includes(initHash)) APP_STATE.currentPage = initHash;
+
+    renderPage();
+    fetchGitHubData();
+  })();
+  </script>
+</body>
+</html>

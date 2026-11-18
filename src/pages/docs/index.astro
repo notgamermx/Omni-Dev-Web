@@ -1,0 +1,61 @@
+---
+// Docs landing page
+import Layout from '@components/Layout.astro';
+
+const DOCS_SECTIONS = [
+  { key: 'install', icon: '⬇️', title: 'Installation & Quick Start' },
+  { key: 'providers', icon: '🔌', title: 'Provider Configuration' },
+  { key: 'automode', icon: '⚡', title: 'AutoMode & Tool Permissions' },
+  { key: 'omnimode', icon: '🌐', title: 'OmniMode Workbench' },
+  { key: 'teachmode', icon: '📖', title: 'Teach Mode' },
+  { key: 'agents', icon: '🤖', title: 'AI Agents & Memory' },
+];
+---
+
+<Layout title="Documentation" description="Setup guides, provider configuration, and mode references for OmniDev.">
+  <div class="space-y-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-6">
+      <div>
+        <div class="text-xs font-mono text-accent/70 uppercase tracking-widest mb-1">Reference</div>
+        <h1 class="text-2xl font-bold text-textMain">Documentation</h1>
+        <p class="text-sm text-textMuted mt-1">Setup guides, provider configuration, and mode references.</p>
+      </div>
+      <div class="relative">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-textDim" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19A8 8 0 103 11a8 8 0 008 8z"/>
+        </svg>
+        <input type="search" placeholder="Filter docs…" class="w-full sm:w-72 pl-9 pr-3 py-2.5 rounded-lg bg-surface border border-border text-sm text-textMain focus:outline-none focus:border-accent focus:ring-1 focus:ring-accentGlow transition-all" />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+      <aside class="md:col-span-3 space-y-1">
+        {DOCS_SECTIONS.map(s => (
+          <a href={`/docs/${s.key}`} class="w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium transition-all flex items-center gap-2 text-textMuted hover:text-textMain hover:bg-surface">
+            <span>{s.icon}</span>
+            <span>{s.title}</span>
+          </a>
+        ))}
+      </aside>
+
+      <section class="md:col-span-9 p-6 rounded-xl bg-surface border border-border space-y-5">
+        <div class="text-center py-12">
+          <div class="text-4xl mb-4">📚</div>
+          <h2 class="text-xl font-bold text-textMain mb-2">Welcome to OmniDev Docs</h2>
+          <p class="text-sm text-textMuted max-w-2xl mx-auto">Select a section from the sidebar to get started. Each section includes setup instructions, configuration examples, and CLI commands.</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {DOCS_SECTIONS.map(s => (
+            <a href={`/docs/${s.key}`} class="p-5 rounded-xl bg-bg border border-border hover:border-borderStrong transition-all group">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="text-2xl">{s.icon}</span>
+                <h3 class="text-sm font-semibold text-textMain group-hover:text-accent transition-colors">{s.title}</h3>
+              </div>
+              <p class="text-xs text-textMuted">View guide →</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,120 @@
+---
+// Admin dashboard
+import Layout from '../../components/Layout.astro';
+---
+
+<Layout title="Admin Dashboard" description="OmniDev Admin Dashboard - Manage site content, releases, and roadmap.">
+  <div class="max-w-6xl mx-auto space-y-8">
+    <div class="border-b border-border pb-6">
+      <div class="text-xs font-mono text-accent/70 uppercase tracking-widest mb-1">Admin</div>
+      <h1 class="text-2xl font-bold text-textMain">Admin Dashboard</h1>
+      <p class="text-sm text-textMuted mt-1">Manage site content, releases, roadmap, and view submissions.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <a href="/admin/content" class="feature-card p-6 rounded-xl bg-surface border border-border flex flex-col gap-2 group">
+        <div class="text-3xl">📝</div>
+        <div class="text-lg font-semibold text-textMain group-hover:text-accent transition-colors">Site Content</div>
+        <div class="text-xs text-textMuted">Edit hero copy, announcement bar, and fallback version</div>
+      </a>
+
+      <a href="/admin/releases" class="feature-card p-6 rounded-xl bg-surface border border-border flex flex-col gap-2 group">
+        <div class="text-3xl">🚀</div>
+        <div class="text-lg font-semibold text-textMain group-hover:text-accent transition-colors">Releases</div>
+        <div class="text-xs text-textMuted">Manage release notes and changelogs</div>
+      </a>
+
+      <a href="/admin/roadmap" class="feature-card p-6 rounded-xl bg-surface border border-border flex flex-col gap-2 group">
+        <div class="text-3xl">🗺️</div>
+        <div class="text-lg font-semibold text-textMain group-hover:text-accent transition-colors">Roadmap</div>
+        <div class="text-xs text-textMuted">Add, edit, and reorder roadmap items</div>
+      </a>
+
+      <a href="/admin/feedback" class="feature-card p-6 rounded-xl bg-surface border border-border flex flex-col gap-2 group">
+        <div class="text-3xl">💬</div>
+        <div class="text-lg font-semibold text-textMain group-hover:text-accent transition-colors">Feedback</div>
+        <div class="text-xs text-textMuted">View community feedback submissions</div>
+      </a>
+
+      <a href="/admin/security" class="feature-card p-6 rounded-xl bg-surface border border-border flex flex-col gap-2 group">
+        <div class="text-3xl">🔒</div>
+        <div class="text-lg font-semibold text-textMain group-hover:text-accent transition-colors">Security Reports</div>
+        <div class="text-xs text-textMuted">View security vulnerability reports (admin only)</div>
+      </a>
+
+      <a href="/" class="feature-card p-6 rounded-xl bg-surface border border-border flex flex-col gap-2 group">
+        <div class="text-3xl">🌐</div>
+        <div class="text-lg font-semibold text-textMain group-hover:text-accent transition-colors">View Site</div>
+        <div class="text-xs text-textMuted">Return to the public website</div>
+      </a>
+    </div>
+
+    <div class="p-5 rounded-xl bg-surface border border-border space-y-3">
+      <h2 class="text-sm font-bold text-textMain">Quick Actions</h2>
+      <div class="flex flex-wrap gap-2">
+        <button id="refresh-github" class="px-3 py-1.5 rounded-lg bg-elevated border border-borderStrong hover:border-accent/50 text-xs font-medium text-textSub transition-all flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          Sync GitHub Releases
+        </button>
+        <button id="export-content" class="px-3 py-1.5 rounded-lg bg-elevated border border-borderStrong hover:border-accent/50 text-xs font-medium text-textSub transition-all flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Export Content JSON
+        </button>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const refreshBtn = document.getElementById('refresh-github');
+    const exportBtn = document.getElementById('export-content');
+
+    refreshBtn?.addEventListener('click', async () => {
+      const originalText = refreshBtn.innerHTML;
+      refreshBtn.innerHTML = '<svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Syncing...';
+      refreshBtn.disabled = true;
+
+      try {
+        const res = await fetch('/api/cms', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('sb-access-token') || ''}`
+          },
+          body: JSON.stringify({ action: 'sync_github' })
+        });
+        if (res.ok) {
+          refreshBtn.innerHTML = '<svg class="w-3.5 h-3.5 text-success" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Synced!';
+        } else {
+          refreshBtn.innerHTML = '<svg class="w-3.5 h-3.5 text-danger" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg> Failed';
+        }
+      } catch {
+        refreshBtn.innerHTML = '<svg class="w-3.5 h-3.5 text-danger" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg> Error';
+      }
+
+      setTimeout(() => {
+        refreshBtn.innerHTML = originalText;
+        refreshBtn.disabled = false;
+      }, 2000);
+    });
+
+    exportBtn?.addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/cms');
+        if (res.ok) {
+          const data = await res.json();
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'omnidev-content.json';
+          a.click();
+          URL.revokeObjectURL(url);
+        }
+      } catch (e) {
+        console.error('Export failed:', e);
+      }
+    });
+  });
+</script>

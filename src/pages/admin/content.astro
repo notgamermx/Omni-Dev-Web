@@ -1,0 +1,117 @@
+---
+// Admin content editor
+import Layout from '@components/Layout.astro';
+---
+
+<Layout title="Admin: Site Content" description="Edit site content including hero copy and announcement bar.">
+  <div class="max-w-4xl mx-auto space-y-8">
+    <div class="flex items-center justify-between gap-4 border-b border-border pb-4">
+      <div>
+        <a href="/admin" class="text-xs text-textMuted hover:text-textMain mb-2 inline-block">← Back to Dashboard</a>
+        <h1 class="text-2xl font-bold text-textMain">Site Content</h1>
+      </div>
+    </div>
+
+    <div id="cms-status" class="hidden p-3 rounded-lg text-xs"></div>
+
+    <div class="p-6 rounded-xl bg-surface border border-border space-y-6">
+      <h2 class="text-base font-bold text-textMain">Site Copy</h2>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs text-textMuted mb-1.5 font-medium" for="cms-announcement">Announcement Bar Text</label>
+          <input id="cms-announcement" type="text" class="w-full px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accentGlow transition-colors" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-textMuted mb-1.5 font-medium" for="cms-hero-title">Hero Headline</label>
+            <input id="cms-hero-title" type="text" class="w-full px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accentGlow transition-colors" />
+          </div>
+          <div>
+            <label class="block text-xs text-textMuted mb-1.5 font-medium" for="cms-fallback-version">Fallback / Pre-release Tag</label>
+            <input id="cms-fallback-version" type="text" class="w-full px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain font-mono text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accentGlow transition-colors" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs text-textMuted mb-1.5 font-medium" for="cms-hero-subtitle">Hero Description</label>
+          <textarea id="cms-hero-subtitle" rows="3" class="w-full px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accentGlow transition-colors resize-none"></textarea>
+        </div>
+
+        <button id="cms-save-copy" type="button" class="px-4 py-2 rounded-lg bg-accent hover:bg-accentHover text-white text-xs font-semibold transition-colors shadow-glow-blue">
+          Save Site Copy
+        </button>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const statusEl = document.getElementById('cms-status');
+    const saveBtn = document.getElementById('cms-save-copy');
+
+    // Load current content
+    async function loadContent() {
+      try {
+        const token = localStorage.getItem('sb-access-token');
+        const res = await fetch('/api/cms', {
+          headers: { 'Authorization': `Bearer ${token || ''}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const content = data.content || [];
+          content.forEach(item => {
+            const input = document.getElementById(`cms-${item.key.replace('_', '-')}`);
+            if (input) input.value = item.value;
+          });
+        }
+      } catch (e) {
+        console.error('Failed to load content:', e);
+      }
+    }
+
+    // Save content
+    saveBtn?.addEventListener('click', async () => {
+      const token = localStorage.getItem('sb-access-token');
+      const updates = [
+        { key: 'announcement', value: document.getElementById('cms-announcement').value },
+        { key: 'hero_title', value: document.getElementById('cms-hero-title').value },
+        { key: 'hero_subtitle', value: document.getElementById('cms-hero-subtitle').value },
+        { key: 'fallback_version', value: document.getElementById('cms-fallback-version').value },
+      ];
+
+      saveBtn.textContent = 'Saving...';
+      saveBtn.disabled = true;
+
+      try {
+        for (const update of updates) {
+          await fetch('/api/cms', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token || ''}`
+            },
+            body: JSON.stringify({ action: 'update_content', ...update })
+          });
+        }
+        showStatus('✓ Site copy saved.', 'success');
+      } catch (e) {
+        showStatus('⚠ Save failed.', 'error');
+      } finally {
+        saveBtn.textContent = 'Save Site Copy';
+        saveBtn.disabled = false;
+      }
+    });
+
+    function showStatus(msg, type) {
+      statusEl.textContent = msg;
+      statusEl.className = `p-3 rounded-lg text-xs ${type === 'success' ? 'bg-successSoft border-success/30 text-success' : 'bg-dangerSoft border-danger/30 text-danger'}`;
+      statusEl.classList.remove('hidden');
+      setTimeout(() => statusEl.classList.add('hidden'), 3000);
+    }
+
+    await loadContent();
+  });
+</script>

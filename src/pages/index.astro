@@ -1,0 +1,153 @@
+---
+// Home page
+import Layout from '../components/Layout.astro';
+import HeroShowcase from '../components/HeroShowcase.tsx';
+import { getSiteContent, getReleases, getRoadmapItems } from '../lib/content';
+import { formatDate, escapeHtml } from '../lib/utils';
+
+// Fetch data at build time
+const siteContent = await getSiteContent();
+const releases = await getReleases();
+const roadmap = await getRoadmapItems();
+const latestRelease = releases.find(r => r.is_latest) || releases[0] || null;
+
+const stats = releases.length > 0 ? [
+  { label: 'GitHub Stars', value: '1.2k+', icon: '⭐' },
+  { label: 'Open Forks', value: '150+', icon: '🔀' },
+  { label: 'License', value: 'Open Source', icon: '⚖️' },
+  { label: 'Latest Release', value: latestRelease?.version || 'main-dev', icon: '🚀' },
+] : null;
+---
+
+<Layout title="OmniDev — AI-Native Development Environment" description="An open-source Tauri 2, React, and FastAPI workbench with autonomous coding agents, multi-provider LLM orchestration, and explicit permission gates.">
+  <section class="pt-2 pb-12 sm:pt-6 sm:pb-16 text-center space-y-8">
+    <div class="max-w-3xl mx-auto space-y-7">
+      <div class="hero-anim">
+        <a href="/updates" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accentSoft border border-borderGlow hover:border-accent/40 text-xs font-mono text-accent/90 transition-all group">
+          <span class="w-1.5 h-1.5 rounded-full {latestRelease ? 'bg-accent animate-pulse2' : 'bg-amber'}"></span>
+          <span>{latestRelease ? `${escapeHtml(latestRelease.version)} · Released ${formatDate(latestRelease.published_at)}` : `OmniDev · ${escapeHtml(siteContent.fallback_version)}`}</span>
+          <span class="text-accent/60 group-hover:translate-x-0.5 transition-transform">→</span>
+        </a>
+      </div>
+
+      <h1 class="hero-anim text-4xl sm:text-5xl md:text-[3.6rem] font-extrabold tracking-tight leading-[1.06] gradient-text">
+        {escapeHtml(siteContent.hero_title)}
+      </h1>
+
+      <p class="hero-anim text-base sm:text-lg text-textMuted max-w-2xl mx-auto leading-relaxed">
+        {escapeHtml(siteContent.hero_subtitle)}
+      </p>
+
+      <div class="hero-anim flex flex-wrap items-center justify-center gap-3">
+        <a href="/download" class="shimmer-btn px-6 py-2.5 rounded-lg text-white text-sm font-semibold transition-all shadow-glow-blue hover:shadow-glow-blue-lg">
+          Download OmniDev ›
+        </a>
+        <a href="https://github.com/notgamermx/omnidev" target="_blank" rel="noopener noreferrer"
+          class="px-6 py-2.5 rounded-lg bg-surface border border-border hover:border-borderStrong text-textSub text-sm font-medium transition-all">
+          <span class="inline-flex items-center gap-2">
+            <svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            View on GitHub
+          </span>
+        </a>
+        <a href="/docs" class="px-6 py-2.5 rounded-lg bg-transparent border border-border hover:border-borderStrong text-textMuted text-sm font-medium transition-all">
+          Read Docs
+        </a>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    {stats && (
+      <div class="hero-anim grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto">
+        {stats.map(s => (
+          <div class="stat-card p-4 rounded-xl bg-surface border border-border text-center">
+            <div class="text-xl mb-1">{s.icon}</div>
+            <div class="stat-number text-base font-bold text-textMain">{s.value}</div>
+            <div class="text-[10px] text-textDim uppercase tracking-wider mt-0.5">{s.label}</div>
+          </div>
+        ))}
+      </div>
+    )}
+
+    <!-- Showcase Window -->
+    <div class="showcase-perspective mt-10 sm:mt-14 max-w-5xl mx-auto hero-anim">
+      <HeroShowcase client:visible />
+    </div>
+  </section>
+
+  <!-- Feature Cards -->
+  <section class="py-14 border-t border-border">
+    <div class="text-center max-w-2xl mx-auto mb-12 scroll-reveal">
+      <div class="text-xs font-mono text-accent/70 uppercase tracking-widest mb-3">Core Modes</div>
+      <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-textMain mb-3">Built for autonomous control.</h2>
+      <p class="text-sm text-textMuted leading-relaxed">Four modes engineered to keep you in command of every file edit, model call, and terminal command.</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {[
+        { num: '01', key: 'automode', label: 'AutoMode', emoji: '⚡', desc: 'Delegate multi-file edits and test runs with configurable approval gates before destructive commands execute.' },
+        { num: '02', key: 'omnimode', label: 'OmniMode', emoji: '🌐', desc: 'Switch seamlessly between local Ollama models and cloud LLM providers inside one unified workbench.' },
+        { num: '03', key: 'teachmode', label: 'Teach Mode', emoji: '📖', desc: 'Step-by-step guided explanations of architecture, diffs, and runtime behavior as you build.' },
+        { num: '04', key: 'agents', label: 'AI Agents', emoji: '🤖', desc: 'Task-oriented coding agents backed by SQLite project memory, integrated terminal, and file management.' },
+      ].map(f => (
+        <div class="scroll-card feature-card p-5 rounded-xl bg-surface border border-border cursor-pointer group" data-feature-mode={f.key}>
+          <div class="flex items-center justify-between mb-4">
+            <div class="text-2xl">{f.emoji}</div>
+            <div class="text-[10px] font-mono text-textDim">{f.num}</div>
+          </div>
+          <h3 class="text-sm font-semibold text-textMain mb-2 group-hover:text-accent transition-colors">{f.label}</h3>
+          <p class="text-xs text-textMuted leading-relaxed">{f.desc}</p>
+          <div class="mt-4 text-[11px] text-accent/70 font-mono opacity-0 group-hover:opacity-100 transition-opacity">View demo →</div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Tech Stack -->
+  <section class="py-10 border-t border-border scroll-reveal">
+    <div class="text-center mb-8">
+      <div class="text-xs font-mono text-textDim uppercase tracking-widest mb-2">Built With</div>
+      <h2 class="text-xl font-bold text-textMain">A modern, open-source stack.</h2>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      {[
+        { name: 'Tauri 2', desc: 'Native desktop shell', badge: 'Rust', color: 'text-amber' },
+        { name: 'React + TS', desc: 'Workbench UI layer', badge: 'Frontend', color: 'text-blue-400' },
+        { name: 'FastAPI', desc: 'Local Python backend', badge: 'Python', color: 'text-green-400' },
+        { name: 'SQLite', desc: 'Persistent local store', badge: 'WAL Mode', color: 'text-purple' },
+      ].map(t => (
+        <div class="p-5 rounded-xl bg-surface border border-border hover:border-borderStrong transition-all group">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-semibold text-textMain group-hover:{t.color} transition-colors">{t.name}</span>
+            <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-elevated border border-border {t.color}">{t.badge}</span>
+          </div>
+          <p class="text-xs text-textMuted">{t.desc}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA Strip -->
+  <section class="py-10 border-t border-border grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="scroll-card feature-card p-6 rounded-xl bg-surface border border-border flex flex-col justify-between gap-4">
+      <div>
+        <div class="text-xs font-mono text-accent/70 uppercase tracking-widest mb-2">Open Source</div>
+        <h3 class="text-base font-bold text-textMain mb-2">Inspect the full source</h3>
+        <p class="text-xs text-textMuted leading-relaxed">FastAPI backend, React workbench, and Tauri 2 desktop configuration — all public on GitHub.</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="https://github.com/notgamermx/omnidev" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg bg-elevated border border-borderStrong hover:border-accent/40 text-xs font-medium text-textSub transition-all">github.com/notgamermx/omnidev ↗</a>
+        <a href="/updates" class="px-4 py-2 rounded-lg bg-bg border border-border hover:border-borderStrong text-xs font-medium text-textMuted hover:text-textSub transition-all">Release History</a>
+      </div>
+    </div>
+    <div class="scroll-card feature-card p-6 rounded-xl bg-surface border border-border flex flex-col justify-between gap-4">
+      <div>
+        <div class="text-xs font-mono text-purple/70 uppercase tracking-widest mb-2">Community</div>
+        <h3 class="text-base font-bold text-textMain mb-2">Report, propose, and contribute</h3>
+        <p class="text-xs text-textMuted leading-relaxed">File bug reports, propose new agent tools, or review our responsible security disclosure policy.</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="/community" class="px-4 py-2 rounded-lg bg-elevated border border-borderStrong hover:border-accent/40 text-xs font-medium text-textSub transition-all">Submit Feedback</a>
+        <a href="/security" class="px-4 py-2 rounded-lg bg-bg border border-border hover:border-borderStrong text-xs font-medium text-textMuted hover:text-textSub transition-all">Security Policy</a>
+      </div>
+    </div>
+  </section>
+</Layout>

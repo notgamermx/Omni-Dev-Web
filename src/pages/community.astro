@@ -1,0 +1,92 @@
+---
+// Community page
+import Layout from '@components/Layout.astro';
+
+const REPO_OWNER = 'notgamermx';
+const REPO_NAME = 'omnidev';
+const REPO_URL = `https://github.com/${REPO_OWNER}/${REPO_NAME}`;
+---
+
+<Layout title="Community & Feedback" description="Contribute code, join discussions, or file bug reports and feature requests for OmniDev.">
+  <div class="space-y-8 max-w-4xl">
+    <div class="border-b border-border pb-6">
+      <div class="text-xs font-mono text-purple/70 uppercase tracking-widest mb-1">Community</div>
+      <h1 class="text-2xl font-bold text-textMain">Community & Feedback</h1>
+      <p class="text-sm text-textMuted mt-1">Contribute code, join discussions, or file bug reports and feature requests.</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {[
+        { href: REPO_URL, icon: '📦', title: 'GitHub Repository', desc: 'Source code, PRs & branches' },
+        { href: `${REPO_URL}/issues`, icon: '🐛', title: 'Issue Tracker', desc: 'Bugs & feature requests' },
+        { href: `${REPO_URL}/discussions`, icon: '💬', title: 'Discussions', desc: 'Architecture & Q&A' },
+      ].map(c => (
+        <a href={c.href} target="_blank" rel="noopener noreferrer" class="feature-card p-5 rounded-xl bg-surface border border-border flex flex-col gap-2 group">
+          <div class="text-2xl">{c.icon}</div>
+          <div class="text-sm font-semibold text-textMain group-hover:text-accent transition-colors">{c.title}</div>
+          <div class="text-xs text-textMuted">{c.desc}</div>
+        </a>
+      ))}
+    </div>
+    <form id="feedback-form" class="p-6 rounded-xl bg-surface border border-border space-y-5">
+      <h2 class="text-base font-bold text-textMain">Create & Copy GitHub Issue Draft</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <select id="fb-type" class="px-3 py-2.5 rounded-lg bg-bg border border-border text-sm text-textMain focus:outline-none focus:border-accent transition-colors">
+          <option value="Bug Report">🐛 Bug Report</option>
+          <option value="Feature Request">✨ Feature Request</option>
+          <option value="General Feedback">💬 General Feedback</option>
+        </select>
+        <input id="fb-title" type="text" required placeholder="Short summary title"
+          class="px-3 py-2.5 rounded-lg bg-bg border border-border text-sm text-textMain focus:outline-none focus:border-accent transition-colors" />
+      </div>
+      <textarea id="fb-body" rows="4" required placeholder="Describe the issue or feature request in detail…"
+        class="w-full px-3 py-2.5 rounded-lg bg-bg border border-border text-sm text-textMain focus:outline-none focus:border-accent transition-colors resize-none"></textarea>
+      <button type="submit" class="px-5 py-2.5 rounded-lg bg-accent hover:bg-accentHover text-white text-xs font-bold transition-colors shadow-glow-blue">
+        Create & Copy Markdown Draft
+      </button>
+    </form>
+  </div>
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('feedback-form');
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const type = (document.getElementById('fb-type') as HTMLSelectElement).value;
+      const title = (document.getElementById('fb-title') as HTMLInputElement).value.trim();
+      const body = (document.getElementById('fb-body') as HTMLTextAreaElement).value.trim();
+      const md = `### [${type}] ${title}\n\n${body}`;
+
+      try {
+        // Submit to API
+        const res = await fetch('/api/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type, title, body })
+        });
+
+        if (res.ok) {
+          navigator.clipboard.writeText(md).then(() => {
+            const btn = form.querySelector('button[type="submit"]');
+            btn.textContent = 'Copied & Submitted!';
+            setTimeout(() => btn.textContent = 'Create & Copy Markdown Draft', 2000);
+          });
+          form.reset();
+        } else {
+          // Still copy locally even if API fails
+          navigator.clipboard.writeText(md).then(() => {
+            const btn = form.querySelector('button[type="submit"]');
+            btn.textContent = 'Copied (offline)';
+            setTimeout(() => btn.textContent = 'Create & Copy Markdown Draft', 2000);
+          });
+        }
+      } catch {
+        navigator.clipboard.writeText(md).then(() => {
+          const btn = form.querySelector('button[type="submit"]');
+          btn.textContent = 'Copied (offline)';
+          setTimeout(() => btn.textContent = 'Create & Copy Markdown Draft', 2000);
+        });
+      }
+    });
+  });
+</script>

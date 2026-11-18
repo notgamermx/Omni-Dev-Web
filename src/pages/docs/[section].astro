@@ -1,0 +1,114 @@
+---
+// Individual doc section page
+import Layout from '@components/Layout.astro';
+import { DOCS_SECTIONS } from '@lib/docs-sections';
+
+const DOCS_DATA = {
+  install: {
+    icon: '⬇️', title: 'Installation & Quick Start',
+    body: 'OmniDev runs as a Tauri 2 desktop application backed by a Python FastAPI + SQLite server and a React + TypeScript workbench.',
+    code: `# 1. Clone\ngit clone https://github.com/notgamermx/omnidev.git\ncd omnidev\n\n# 2. Backend\npip install -r requirements.txt\npython -m uvicorn backend.main:app --reload\n\n# 3. Frontend\nnpm install && npm run dev`
+  },
+  providers: {
+    icon: '🔌', title: 'Provider Configuration',
+    body: 'Configure local Ollama endpoints or external LLM API keys in your workspace settings. Credentials stay local to your machine.',
+    code: `{\n  "default_provider": "ollama",\n  "ollama_base_url": "http://localhost:11434",\n  "models": ["qwen2.5-coder:7b", "llama3.1:8b"],\n  "cloud_fallback": "openai"\n}`
+  },
+  automode: {
+    icon: '⚡', title: 'AutoMode & Tool Permissions',
+    body: 'AutoMode enables autonomous multi-step file edits and command execution while enforcing explicit user-approval gates on destructive or shell actions.',
+    code: `# .omnidev/permissions.yaml\nfile_read:   allow\nfile_edit:   allow_with_diff\nshell_exec:  ask_always\nnet_request: deny`
+  },
+  omnimode: {
+    icon: '🌐', title: 'OmniMode Workbench',
+    body: 'OmniMode unifies file exploration, code editing, integrated PTY terminal, and persistent project memory in a single 4-panel layout.',
+    code: `# Launch OmniMode in current repo\nomnidev open .\n\n# Or via CLI shorthand\nomnidev --mode omni .`
+  },
+  teachmode: {
+    icon: '📖', title: 'Teach Mode',
+    body: 'Teach Mode pairs repository changes with structured explanations so you can inspect why a pattern, query, or component was written a certain way.',
+    code: `# Guided walkthrough on a file\nomnidev teach src/components/ProjectLauncherModal.tsx\n\n# With checkpoint pauses\nomnidev teach --step backend/agent_runner.py`
+  },
+  agents: {
+    icon: '🤖', title: 'AI Agents & Memory',
+    body: 'Agents maintain persistent SQLite-backed project memory, track conversation turns, and coordinate via a task queue with Planner and Verifier roles.',
+    code: `# Check active agent tasks\nomnidev tasks list\n\n# Queue a new agent task\nomnidev tasks add "Refactor auth middleware"`
+  }
+};
+
+export async function getStaticPaths() {
+  return DOCS_SECTIONS.map(section => ({
+    params: { section },
+    props: { section },
+  }));
+}
+
+const { section } = Astro.params;
+const activeKey = DOCS_DATA[section as keyof typeof DOCS_DATA] ? section : 'install';
+const active = DOCS_DATA[activeKey as keyof typeof DOCS_DATA];
+const keys = DOCS_SECTIONS;
+---
+
+<Layout title={`Documentation: ${active.title}`} description={`OmniDev documentation: ${active.title}`}>
+  <div class="space-y-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-6">
+      <div>
+        <div class="text-xs font-mono text-accent/70 uppercase tracking-widest mb-1">Reference</div>
+        <h1 class="text-2xl font-bold text-textMain">Documentation</h1>
+        <p class="text-sm text-textMuted mt-1">Setup guides, provider configuration, and mode references.</p>
+      </div>
+      <div class="relative">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-textDim" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19A8 8 0 103 11a8 8 0 008 8z"/>
+        </svg>
+        <input type="search" placeholder="Filter docs…" class="w-full sm:w-72 pl-9 pr-3 py-2.5 rounded-lg bg-surface border border-border text-sm text-textMain focus:outline-none focus:border-accent focus:ring-1 focus:ring-accentGlow transition-all" />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+      <aside class="md:col-span-3 space-y-1">
+        {keys.map(k => (
+          <a href={`/docs/${k}`} class={`w-full text-left px-3 py-2.5 rounded-lg text-xs font-medium transition-all flex items-center gap-2 ${activeKey === k ? 'bg-elevated border border-borderStrong text-textMain' : 'text-textMuted hover:text-textMain hover:bg-surface'}`}>
+            <span>{DOCS_DATA[k].icon}</span>
+            <span>{DOCS_DATA[k].title}</span>
+          </a>
+        ))}
+      </aside>
+
+      <section class="md:col-span-9 p-6 rounded-xl bg-surface border border-border space-y-5">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">{active.icon}</span>
+          <h2 class="text-xl font-bold text-textMain">{active.title}</h2>
+        </div>
+        <p class="text-sm text-textMuted leading-relaxed">{active.body}</p>
+        <div class="code-block relative group">
+          <div class="flex items-center justify-between px-4 py-2.5 border-b border-border">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-danger/60"></span>
+              <span class="w-2 h-2 rounded-full bg-amber/60"></span>
+              <span class="w-2 h-2 rounded-full bg-success/60"></span>
+            </div>
+            <button type="button" data-copy={active.code} class="px-2.5 py-1 rounded bg-elevated border border-border text-[11px] text-textDim hover:text-textMain transition-all opacity-0 group-hover:opacity-100">Copy</button>
+          </div>
+          <pre class="p-4 text-xs text-green-400 overflow-x-auto code-scroll font-mono leading-relaxed">{active.code}</pre>
+        </div>
+        <div class="pt-4 border-t border-border flex flex-wrap gap-2">
+          <a href="https://github.com/notgamermx/omnidev" target="_blank" rel="noopener noreferrer" class="text-xs text-accent hover:underline">View full source on GitHub →</a>
+        </div>
+      </section>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Copy code blocks
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-copy]');
+    if (btn) {
+      navigator.clipboard.writeText(btn.getAttribute('data-copy')).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 1500);
+      });
+    }
+  });
+</script>

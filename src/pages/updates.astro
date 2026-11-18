@@ -1,0 +1,127 @@
+---
+// Updates & Roadmap page
+import Layout from '@components/Layout.astro';
+import { getReleases, getRoadmapItems, getSiteContent } from '../lib/content';
+import { formatDate, escapeHtml, getStatusStyle } from '../lib/utils';
+
+const releases = await getReleases();
+const roadmap = await getRoadmapItems();
+const siteContent = await getSiteContent();
+
+// Combine custom releases from CMS with GitHub releases
+const customReleases = releases.filter(r => r.source === 'cms');
+const githubReleases = releases.filter(r => r.source === 'github');
+const allReleases = [...customReleases, ...githubReleases];
+---
+
+<Layout title="Updates & Roadmap" description="Track OmniDev releases from GitHub and upcoming features managed via Admin CMS.">
+  <div class="space-y-12">
+    <div class="border-b border-border pb-6">
+      <div class="text-xs font-mono text-accent/70 uppercase tracking-widest mb-1">Changelog</div>
+      <h1 class="text-2xl font-bold text-textMain">Updates & Roadmap</h1>
+      <p class="text-sm text-textMuted mt-1">Track published versions from GitHub Releases and upcoming features managed via Admin CMS.</p>
+    </div>
+
+    <section class="space-y-5">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-lg font-bold text-textMain">Release History</h2>
+        <a href="/admin" class="text-xs text-accent hover:text-blue-400 transition-colors flex items-center gap-1 font-medium">
+          <span>+</span> Add Release in CMS
+        </a>
+      </div>
+      {allReleases.length > 0 ? (
+        <div class="space-y-4">
+          {allReleases.map(rel => {
+            const relDate = rel.published_at ? formatDate(rel.published_at) : '—';
+            const relBody = rel.body || 'No changelog body provided.';
+            const relUrl = rel.html_url || `https://github.com/notgamermx/omnidev/releases`;
+            const isCustom = rel.source === 'cms';
+            return (
+              <article class="p-5 rounded-xl bg-surface border border-border hover:border-borderStrong transition-all group space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <div class="flex items-center gap-3">
+                    <span class="font-mono text-base font-bold text-accent">{escapeHtml(rel.version)}</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-elevated border border-border text-textDim">{isCustom ? 'Admin CMS' : 'GitHub'}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs text-textDim">{relDate}</span>
+                    <a href={relUrl} target="_blank" rel="noopener noreferrer" class="text-[11px] text-accent/70 hover:text-accent transition-colors hidden group-hover:block">View on GitHub ↗</a>
+                  </div>
+                </div>
+                <pre class="text-xs text-textMuted font-sans whitespace-pre-wrap leading-relaxed border-t border-border pt-3">{escapeHtml(relBody)}</pre>
+              </article>
+            );
+          })}
+        </div>
+      ) : (
+        <div class="p-6 rounded-xl bg-surface border border-border text-center space-y-3">
+          <div class="text-3xl">📭</div>
+          <p class="text-sm text-textMuted">No releases found on <a href="https://github.com/notgamermx/omnidev/releases" target="_blank" class="text-accent hover:underline">GitHub Releases</a> yet.</p>
+          <a href="/admin" class="text-xs text-accent hover:underline font-medium">Use Admin CMS to draft release notes →</a>
+        </div>
+      )}
+    </section>
+
+    <section class="space-y-5 border-t border-border pt-10">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <h2 class="text-lg font-bold text-textMain">Product Roadmap</h2>
+        <div class="flex flex-wrap gap-1.5">
+          {['all', 'planned', 'in-progress', 'completed'].map(st => (
+            <button type="button" data-roadmap-filter={st} class={`px-3 py-1.5 rounded-full text-[11px] font-semibold border capitalize transition-all ${st === 'all' ? 'bg-accent border-accent/50 text-white' : 'bg-surface border-border text-textMuted hover:text-textMain hover:border-borderStrong'}`}>
+              {st.replace('-', ' ')}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="roadmap-grid">
+        {roadmap.map(item => {
+          const st = getStatusStyle(item.status);
+          return (
+            <div class="p-5 rounded-xl bg-surface border border-border hover:border-borderStrong transition-all">
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <div class="flex items-start gap-2.5">
+                  <span class={`w-2 h-2 rounded-full ${st.dot} mt-1.5 shrink-0`}></span>
+                  <h3 class="text-sm font-semibold text-textMain leading-snug">{escapeHtml(item.title)}</h3>
+                </div>
+                <span class={`text-[10px] font-mono px-2 py-0.5 rounded-full border shrink-0 ${st.badge}`}>{st.label}</span>
+              </div>
+              <p class="text-xs text-textMuted leading-relaxed pl-4">{escapeHtml(item.description || 'Scheduled in OmniDev roadmap.')}</p>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<script>
+  // Roadmap filter
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('[data-roadmap-filter]');
+    const grid = document.getElementById('roadmap-grid');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-roadmap-filter');
+        buttons.forEach(b => {
+          b.classList.remove('bg-accent', 'border-accent/50', 'text-white');
+          b.classList.add('bg-surface', 'border-border', 'text-textMuted');
+        });
+        btn.classList.add('bg-accent', 'border-accent/50', 'text-white');
+        btn.classList.remove('bg-surface', 'border-border', 'text-textMuted');
+
+        // Filter items
+        const items = grid?.querySelectorAll('.p-5.rounded-xl');
+        items?.forEach(item => {
+          const statusEl = item.querySelector('span[class*="bg-"]');
+          const status = statusEl?.textContent?.trim().toLowerCase().replace(' ', '-');
+          if (filter === 'all' || status === filter) {
+            item.style.display = '';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+  });
+</script>

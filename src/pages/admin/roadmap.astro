@@ -1,0 +1,183 @@
+---
+// Admin roadmap management
+import Layout from '@components/Layout.astro';
+---
+
+<Layout title="Admin: Roadmap" description="Manage product roadmap items.">
+  <div class="max-w-4xl mx-auto space-y-8">
+    <div class="flex items-center justify-between gap-4 border-b border-border pb-4">
+      <div>
+        <a href="/admin" class="text-xs text-textMuted hover:text-textMain mb-2 inline-block">← Back to Dashboard</a>
+        <h1 class="text-2xl font-bold text-textMain">Roadmap</h1>
+      </div>
+    </div>
+
+    <div id="cms-status" class="hidden p-3 rounded-lg text-xs"></div>
+
+    <!-- Add Roadmap Item Form -->
+    <div class="p-6 rounded-xl bg-surface border border-border space-y-4">
+      <h2 class="text-base font-bold text-textMain">Add Roadmap Item</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <input id="cms-road-title" type="text" placeholder="Feature title" class="sm:col-span-2 px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain text-sm focus:outline-none focus:border-accent transition-colors" />
+        <select id="cms-road-status" class="px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain text-sm focus:outline-none focus:border-accent transition-colors">
+          <option value="planned">Planned</option>
+          <option value="in-progress">In Progress</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+      <input id="cms-road-desc" type="text" placeholder="Short description" class="w-full px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain text-sm focus:outline-none focus:border-accent transition-colors" />
+      <button id="cms-add-roadmap" type="button" class="px-4 py-2 rounded-lg bg-elevated border border-borderStrong hover:border-accent text-textMain text-xs font-semibold transition-all">
+        + Add Roadmap Item
+      </button>
+    </div>
+
+    <!-- Roadmap List -->
+    <div class="p-6 rounded-xl bg-surface border border-border space-y-4">
+      <h2 class="text-base font-bold text-textMain">Roadmap Items</h2>
+      <div id="roadmap-list" class="space-y-3">
+        <div class="text-center text-textMuted py-8">Loading...</div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const statusEl = document.getElementById('cms-status');
+    const addBtn = document.getElementById('cms-add-roadmap');
+    const listEl = document.getElementById('roadmap-list');
+
+    function showStatus(msg, type) {
+      statusEl.textContent = msg;
+      statusEl.className = `p-3 rounded-lg text-xs ${type === 'success' ? 'bg-successSoft border-success/30 text-success' : 'bg-dangerSoft border-danger/30 text-danger'}`;
+      statusEl.classList.remove('hidden');
+      setTimeout(() => statusEl.classList.add('hidden'), 3000);
+    }
+
+    function getStatusStyle(status) {
+      const styles = {
+        completed: { badge: 'text-success border-success/30 bg-successSoft', dot: 'bg-success', label: 'Completed' },
+        'in-progress': { badge: 'text-amber border-amber/30 bg-amberSoft', dot: 'bg-amber', label: 'In Progress' },
+        planned: { badge: 'text-textDim border-border bg-elevated', dot: 'bg-border', label: 'Planned' },
+      };
+      return styles[status] || styles.planned;
+    }
+
+    async function loadRoadmap() {
+      try {
+        const token = localStorage.getItem('sb-access-token');
+        const res = await fetch('/api/cms', {
+          headers: { 'Authorization': `Bearer ${token || ''}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          renderRoadmap(data.roadmap || []);
+        } else {
+          listEl.innerHTML = '<div class="text-center text-textMuted py-8">Failed to load roadmap</div>';
+        }
+      } catch (e) {
+        console.error('Failed to load roadmap:', e);
+        listEl.innerHTML = '<div class="text-center text-textMuted py-8">Error loading roadmap</div>';
+      }
+    }
+
+    function renderRoadmap(items) {
+      if (items.length === 0) {
+        listEl.innerHTML = '<div class="text-center text-textMuted py-8">No roadmap items yet</div>';
+        return;
+      }
+
+      listEl.innerHTML = items.map(item => {
+        const st = getStatusStyle(item.status);
+        return `
+          <div class="p-4 rounded-lg bg-bg border border-border flex flex-wrap items-start justify-between gap-3">
+            <div class="flex-1 min-w-0 flex items-start gap-2.5">
+              <span class="w-2 h-2 rounded-full ${st.dot} mt-1.5 shrink-0"></span>
+              <div>
+                <h3 class="text-sm font-semibold text-textMain leading-snug">${item.title}</h3>
+                <p class="text-xs text-textMuted leading-relaxed">${item.description || ''}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border shrink-0 ${st.badge}">${st.label}</span>
+              <button data-action="edit" data-id="${item.id}" class="px-2.5 py-1 rounded bg-elevated border border-border text-[11px] text-textDim hover:text-textMain">Edit</button>
+              <button data-action="delete" data-id="${item.id}" class="px-2.5 py-1 rounded bg-elevated border border-border text-[11px] text-danger hover:text-red-400 hover:border-danger/50">Delete</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      listEl.querySelectorAll('[data-action="delete"]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Delete this roadmap item?')) return;
+          await deleteItem(btn.dataset.id);
+        });
+      });
+    }
+
+    async function deleteItem(id) {
+      try {
+        const token = localStorage.getItem('sb-access-token');
+        const res = await fetch(`/api/cms?action=delete_roadmap&id=${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token || ''}` }
+        });
+        if (res.ok) {
+          showStatus('✓ Roadmap item deleted.', 'success');
+          loadRoadmap();
+        } else {
+          showStatus('⚠ Delete failed.', 'error');
+        }
+      } catch (e) {
+        showStatus('⚠ Error.', 'error');
+      }
+    }
+
+    addBtn?.addEventListener('click', async () => {
+      const title = document.getElementById('cms-road-title').value.trim();
+      const status = document.getElementById('cms-road-status').value;
+      const desc = document.getElementById('cms-road-desc').value.trim();
+
+      if (!title) {
+        showStatus('⚠ Enter a feature title.', 'error');
+        return;
+      }
+
+      addBtn.textContent = 'Adding...';
+      addBtn.disabled = true;
+
+      try {
+        const token = localStorage.getItem('sb-access-token');
+        const res = await fetch('/api/cms', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token || ''}`
+          },
+          body: JSON.stringify({
+            action: 'create_roadmap',
+            title,
+            status,
+            description: desc || 'Scheduled in OmniDev roadmap.',
+          })
+        });
+
+        if (res.ok) {
+          showStatus(`✓ Added "${title}".`, 'success');
+          document.getElementById('cms-road-title').value = '';
+          document.getElementById('cms-road-desc').value = '';
+          loadRoadmap();
+        } else {
+          showStatus('⚠ Add failed.', 'error');
+        }
+      } catch (e) {
+        showStatus('⚠ Error.', 'error');
+      } finally {
+        addBtn.textContent = '+ Add Roadmap Item';
+        addBtn.disabled = false;
+      }
+    });
+
+    await loadRoadmap();
+  });
+</script>

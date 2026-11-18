@@ -1,0 +1,77 @@
+---
+// About page
+import Layout from '@components/Layout.astro';
+import { escapeHtml } from '../lib/utils';
+
+const REPO_OWNER = 'notgamermx';
+const REPO_NAME = 'omnidev';
+const REPO_URL = `https://github.com/${REPO_OWNER}/${REPO_NAME}`;
+---
+
+<Layout title="About OmniDev" description="An open-source AI development environment built for transparency, local control, and developer velocity.">
+  <div class="space-y-8 max-w-4xl">
+    <div class="border-b border-border pb-6">
+      <div class="text-xs font-mono text-accent/70 uppercase tracking-widest mb-1">Project</div>
+      <h1 class="text-2xl font-bold text-textMain">About OmniDev</h1>
+      <p class="text-sm text-textMuted mt-1">An open-source AI development environment built for transparency, local control, and developer velocity.</p>
+    </div>
+    <div class="p-6 rounded-xl bg-surface border border-border space-y-4">
+      <h2 class="text-base font-bold text-textMain">Architecture</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+        {[
+          { layer: 'Desktop Shell', tech: 'Tauri 2 + Rust', desc: 'Native window management, secure IPC, file system access, and PTY terminals.' },
+          { layer: 'Frontend', tech: 'React 18 + TypeScript', desc: '4-panel workbench: file explorer, Monaco editor, agent panel, integrated terminal.' },
+          { layer: 'Backend', tech: 'FastAPI + SQLite', desc: 'Local REST + WebSocket API serving agent tools, project memory, and task queues.' },
+          { layer: 'AI Layer', tech: 'Multi-provider LLM', desc: 'Pluggable provider router supporting Ollama (local) and cloud APIs with fallback logic.' },
+        ].map(a => (
+          <div class="p-4 rounded-lg bg-bg border border-border">
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="font-semibold text-textSub">{a.layer}</span>
+              <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-elevated border border-border text-accent">{a.tech}</span>
+            </div>
+            <p class="text-textDim leading-relaxed">{a.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div class="p-6 rounded-xl bg-surface border border-border space-y-4">
+      <h2 class="text-base font-bold text-textMain">Maintainer & Contributors</h2>
+      <div class="flex flex-wrap items-center justify-between gap-4 p-4 rounded-lg bg-bg border border-border">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-purple flex items-center justify-center font-bold text-white text-sm">
+            {REPO_OWNER.slice(0,2).toUpperCase()}
+          </div>
+          <div>
+            <div class="font-mono font-bold text-textMain text-sm">{REPO_OWNER}</div>
+            <div class="text-xs text-textMuted">Creator & Lead Maintainer</div>
+          </div>
+        </div>
+        <a href={`${REPO_URL}/graphs/contributors`} target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg bg-elevated border border-borderStrong hover:border-accent/50 text-xs font-semibold text-textSub transition-all">
+          View All Contributors →
+        </a>
+      </div>
+      <div class="grid grid-cols-3 gap-3 text-center text-xs">
+        <div class="p-3 rounded-lg bg-bg border border-border">
+          <div class="font-bold text-base text-textMain">1.2k+</div>
+          <div class="text-textDim">Stars</div>
+        </div>
+        <div class="p-3 rounded-lg bg-bg border border-border">
+          <div class="font-bold text-base text-textMain">150+</div>
+          <div class="text-textDim">Forks</div>
+        </div>
+        <div class="p-3 rounded-lg bg-bg border border-border">
+          <div class="font-bold text-base text-textMain">24</div>
+          <div class="text-textDim">Open Issues</div>
+        </div>
+      </div>
+    </div>
+    <div class="p-6 rounded-xl bg-gradient-to-r from-accentSoft to-transparent border border-borderGlow space-y-3">
+      <h2 class="text-base font-bold text-textMain">🤝 Contributing</h2>
+      <p class="text-sm text-textMuted leading-relaxed">OmniDev welcomes contributions of all kinds — bug fixes, new provider integrations, agent tools, documentation, and design improvements.</p>
+      <div class="flex flex-wrap gap-3 pt-1">
+        <a href={`${REPO_URL}/blob/main/CONTRIBUTING.md`} target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg bg-accent hover:bg-accentHover text-white text-xs font-bold transition-colors">Contributing Guide</a>
+        <a href={`${REPO_URL}/issues/new`} target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-lg bg-elevated border border-borderStrong hover:border-accent/50 text-xs font-semibold text-textSub transition-all">Open an Issue</a>
+      </div>
+    </div>
+  </div>
+</Layout>

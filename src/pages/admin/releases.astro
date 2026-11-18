@@ -1,0 +1,168 @@
+---
+// Admin releases management
+import Layout from '@components/Layout.astro';
+---
+
+<Layout title="Admin: Releases" description="Manage release notes and changelogs.">
+  <div class="max-w-4xl mx-auto space-y-8">
+    <div class="flex items-center justify-between gap-4 border-b border-border pb-4">
+      <div>
+        <a href="/admin" class="text-xs text-textMuted hover:text-textMain mb-2 inline-block">← Back to Dashboard</a>
+        <h1 class="text-2xl font-bold text-textMain">Releases</h1>
+      </div>
+    </div>
+
+    <div id="cms-status" class="hidden p-3 rounded-lg text-xs"></div>
+
+    <!-- Add Release Form -->
+    <div class="p-6 rounded-xl bg-surface border border-border space-y-4">
+      <h2 class="text-base font-bold text-textMain">Add Release Note</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <input id="cms-rel-version" type="text" placeholder="Version (e.g. v0.2.0)" class="px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain font-mono text-sm focus:outline-none focus:border-accent transition-colors" />
+        <input id="cms-rel-date" type="date" class="px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain text-sm focus:outline-none focus:border-accent transition-colors" />
+      </div>
+      <textarea id="cms-rel-notes" rows="3" placeholder="Changelog notes (one item per line)" class="w-full px-3 py-2.5 rounded-lg bg-bg border border-border text-textMain text-sm focus:outline-none focus:border-accent transition-colors resize-none"></textarea>
+      <button id="cms-add-release" type="button" class="px-4 py-2 rounded-lg bg-elevated border border-borderStrong hover:border-accent text-textMain text-xs font-semibold transition-all">
+        + Add Release Note
+      </button>
+    </div>
+
+    <!-- Releases List -->
+    <div class="p-6 rounded-xl bg-surface border border-border space-y-4">
+      <h2 class="text-base font-bold text-textMain">Existing Releases</h2>
+      <div id="releases-list" class="space-y-3">
+        <div class="text-center text-textMuted py-8">Loading...</div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const statusEl = document.getElementById('cms-status');
+    const addBtn = document.getElementById('cms-add-release');
+    const listEl = document.getElementById('releases-list');
+    const dateInput = document.getElementById('cms-rel-date');
+
+    // Set today's date as default
+    dateInput.value = new Date().toISOString().slice(0, 10);
+
+    function showStatus(msg, type) {
+      statusEl.textContent = msg;
+      statusEl.className = `p-3 rounded-lg text-xs ${type === 'success' ? 'bg-successSoft border-success/30 text-success' : 'bg-dangerSoft border-danger/30 text-danger'}`;
+      statusEl.classList.remove('hidden');
+      setTimeout(() => statusEl.classList.add('hidden'), 3000);
+    }
+
+    async function loadReleases() {
+      try {
+        const token = localStorage.getItem('sb-access-token');
+        const res = await fetch('/api/cms', {
+          headers: { 'Authorization': `Bearer ${token || ''}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          renderReleases(data.releases || []);
+        } else {
+          listEl.innerHTML = '<div class="text-center text-textMuted py-8">Failed to load releases</div>';
+        }
+      } catch (e) {
+        console.error('Failed to load releases:', e);
+        listEl.innerHTML = '<div class="text-center text-textMuted py-8">Error loading releases</div>';
+      }
+    }
+
+    function renderReleases(releases) {
+      if (releases.length === 0) {
+        listEl.innerHTML = '<div class="text-center text-textMuted py-8">No releases yet</div>';
+        return;
+      }
+
+      listEl.innerHTML = releases.map(r => `
+        <div class="p-4 rounded-lg bg-bg border border-border flex flex-wrap items-center justify-between gap-3">
+          <div class="flex-1 min-w-0">
+            <div class="font-mono text-sm text-textMain">${r.version}</div>
+            <div class="text-[11px] text-textDim mt-0.5">${r.source === 'github' ? '📦 GitHub' : '📝 CMS'} · ${r.published_at ? new Date(r.published_at).toLocaleDateString() : 'No date'}</div>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button data-action="edit" data-id="${r.id}" class="px-2.5 py-1 rounded bg-elevated border border-border text-[11px] text-textDim hover:text-textMain">Edit</button>
+            <button data-action="delete" data-id="${r.id}" class="px-2.5 py-1 rounded bg-elevated border border-border text-[11px] text-danger hover:text-red-400 hover:border-danger/50">Delete</button>
+          </div>
+        </div>
+      `).join('');
+
+      // Add event listeners
+      listEl.querySelectorAll('[data-action="delete"]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Delete this release?')) return;
+          await deleteRelease(btn.dataset.id);
+        });
+      });
+    }
+
+    async function deleteRelease(id) {
+      try {
+        const token = localStorage.getItem('sb-access-token');
+        const res = await fetch(`/api/cms?action=delete_release&id=${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token || ''}` }
+        });
+        if (res.ok) {
+          showStatus('✓ Release deleted.', 'success');
+          loadReleases();
+        } else {
+          showStatus('⚠ Delete failed.', 'error');
+        }
+      } catch (e) {
+        showStatus('⚠ Error.', 'error');
+      }
+    }
+
+    addBtn?.addEventListener('click', async () => {
+      const version = document.getElementById('cms-rel-version').value.trim();
+      const date = document.getElementById('cms-rel-date').value;
+      const notes = document.getElementById('cms-rel-notes').value.split('\n').map(s => s.trim()).filter(Boolean);
+
+      if (!version || !notes.length) {
+        showStatus('⚠ Enter a version and at least one changelog line.', 'error');
+        return;
+      }
+
+      addBtn.textContent = 'Adding...';
+      addBtn.disabled = true;
+
+      try {
+        const token = localStorage.getItem('sb-access-token');
+        const res = await fetch('/api/cms', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token || ''}`
+          },
+          body: JSON.stringify({
+            action: 'create_release',
+            version,
+            published_at: date,
+            body: notes.join('\n'),
+          })
+        });
+
+        if (res.ok) {
+          showStatus(`✓ Added ${version}.`, 'success');
+          document.getElementById('cms-rel-version').value = '';
+          document.getElementById('cms-rel-notes').value = '';
+          loadReleases();
+        } else {
+          showStatus('⚠ Add failed.', 'error');
+        }
+      } catch (e) {
+        showStatus('⚠ Error.', 'error');
+      } finally {
+        addBtn.textContent = '+ Add Release Note';
+        addBtn.disabled = false;
+      }
+    });
+
+    await loadReleases();
+  });
+</script>

@@ -1,0 +1,83 @@
+---
+// Security page
+import Layout from '@components/Layout.astro';
+
+const REPO_OWNER = 'notgamermx';
+const REPO_NAME = 'omnidev';
+const REPO_URL = `https://github.com/${REPO_OWNER}/${REPO_NAME}`;
+---
+
+<Layout title="Security Policy" description="Responsible vulnerability disclosure and execution boundary guidelines for OmniDev.">
+  <div class="space-y-8 max-w-4xl">
+    <div class="border-b border-border pb-6">
+      <div class="text-xs font-mono text-danger/70 uppercase tracking-widest mb-1">Safety</div>
+      <h1 class="text-2xl font-bold text-textMain">Security Policy & Reporting</h1>
+      <p class="text-sm text-textMuted mt-1">Responsible vulnerability disclosure and execution boundary guidelines.</p>
+    </div>
+    <div class="p-5 rounded-xl bg-dangerSoft border border-danger/20 flex gap-3">
+      <span class="text-xl shrink-0">⚠️</span>
+      <div class="text-xs text-textSub leading-relaxed">
+        <strong>Do not open public GitHub issues for unpatched security vulnerabilities.</strong>
+        Use GitHub Private Vulnerability Reporting at
+        <a href={`${REPO_URL}/security`} target="_blank" rel="noopener noreferrer" class="text-accent hover:underline font-mono">{REPO_URL}/security</a>
+      </div>
+    </div>
+    <div class="p-6 rounded-xl bg-surface border border-border space-y-5">
+      <h2 class="text-base font-bold text-textMain">Response SLA</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {[
+          { label: 'Acknowledgment', val: 'Within 48 hours', icon: '📨' },
+          { label: 'Triage & Severity', val: 'Within 5 business days', icon: '🔎' },
+          { label: 'Supported Branch', val: 'Latest Stable / main', icon: '🌿' },
+        ].map(x => (
+          <div class="p-4 rounded-lg bg-bg border border-border text-center">
+            <div class="text-2xl mb-2">{x.icon}</div>
+            <div class="text-[10px] text-textDim uppercase tracking-wider mb-1">{x.label}</div>
+            <div class="font-mono text-sm text-textMain font-semibold">{x.val}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+    <form id="security-report-form" class="p-6 rounded-xl bg-surface border border-border space-y-5">
+      <h2 class="text-base font-bold text-textMain">Draft Security Advisory Payload</h2>
+      <p class="text-xs text-textMuted">Compose your report here, then copy it to paste into GitHub's private advisory form.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <input id="sec-component" type="text" required placeholder="Affected component (e.g. AutoMode shell runner)"
+          class="px-3 py-2.5 rounded-lg bg-bg border border-border text-sm text-textMain focus:outline-none focus:border-accent transition-colors" />
+        <select id="sec-severity" class="px-3 py-2.5 rounded-lg bg-bg border border-border text-sm text-textMain focus:outline-none focus:border-accent transition-colors">
+          <option value="Critical">🔴 Severity: Critical</option>
+          <option value="High">🟠 Severity: High</option>
+          <option value="Medium" selected>🟡 Severity: Medium</option>
+          <option value="Low">🟢 Severity: Low</option>
+        </select>
+      </div>
+      <textarea id="sec-details" rows="4" required placeholder="Steps to reproduce, potential impact, and environment details…"
+        class="w-full px-3 py-2.5 rounded-lg bg-bg border border-border text-sm text-textMain focus:outline-none focus:border-accent transition-colors resize-none"></textarea>
+      <div class="flex flex-wrap items-center gap-3">
+        <button type="submit" class="px-5 py-2.5 rounded-lg bg-danger hover:bg-red-600 text-white text-xs font-bold transition-colors">
+          Generate & Copy Report
+        </button>
+        <a href={`${REPO_URL}/security/advisories/new`} target="_blank" rel="noopener noreferrer"
+          class="text-xs text-accent hover:underline font-medium">Open GitHub Security Advisory →</a>
+      </div>
+    </form>
+  </div>
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('security-report-form');
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const comp = (document.getElementById('sec-component') as HTMLInputElement).value.trim();
+      const sev = (document.getElementById('sec-severity') as HTMLSelectElement).value;
+      const det = (document.getElementById('sec-details') as HTMLTextAreaElement).value.trim();
+      const md = `## Security Report — Severity: ${sev}\n**Component:** ${comp}\n\n**Details & Reproduction Steps:**\n${det}`;
+      navigator.clipboard.writeText(md).then(() => {
+        const btn = form.querySelector('button[type="submit"]');
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Generate & Copy Report', 1500);
+      });
+    });
+  });
+</script>

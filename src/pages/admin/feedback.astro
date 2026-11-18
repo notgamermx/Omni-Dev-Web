@@ -1,0 +1,90 @@
+---
+// Admin feedback viewer
+import Layout from '@components/Layout.astro';
+---
+
+<Layout title="Admin: Feedback" description="View community feedback submissions.">
+  <div class="max-w-4xl mx-auto space-y-8">
+    <div class="flex items-center justify-between gap-4 border-b border-border pb-4">
+      <div>
+        <a href="/admin" class="text-xs text-textMuted hover:text-textMain mb-2 inline-block">← Back to Dashboard</a>
+        <h1 class="text-2xl font-bold text-textMain">Feedback Submissions</h1>
+      </div>
+    </div>
+
+    <div class="p-6 rounded-xl bg-surface border border-border space-y-4">
+      <div id="feedback-list" class="space-y-3">
+        <div class="text-center text-textMuted py-8">Loading...</div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const listEl = document.getElementById('feedback-list');
+
+    async function loadFeedback() {
+      try {
+        const token = localStorage.getItem('sb-access-token');
+        const res = await fetch('/api/cms', {
+          headers: { 'Authorization': `Bearer ${token || ''}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          renderFeedback(data.feedback || []);
+        } else {
+          listEl.innerHTML = '<div class="text-center text-textMuted py-8">Failed to load feedback</div>';
+        }
+      } catch (e) {
+        console.error('Failed to load feedback:', e);
+        listEl.innerHTML = '<div class="text-center text-textMuted py-8">Error loading feedback</div>';
+      }
+    }
+
+    function getStatusStyle(status) {
+      const styles = {
+        new: { badge: 'text-accent border-accent/30 bg-accentSoft', label: 'New' },
+        triaged: { badge: 'text-purple border-purple/30 bg-purpleSoft', label: 'Triaged' },
+        'in-progress': { badge: 'text-amber border-amber/30 bg-amberSoft', label: 'In Progress' },
+        closed: { badge: 'text-textDim border-border bg-elevated', label: 'Closed' },
+      };
+      return styles[status] || styles.new;
+    }
+
+    function renderFeedback(items) {
+      if (items.length === 0) {
+        listEl.innerHTML = '<div class="text-center text-textMuted py-8">No feedback submissions yet</div>';
+        return;
+      }
+
+      listEl.innerHTML = items.map(fb => {
+        const st = getStatusStyle(fb.status);
+        return `
+          <div class="p-4 rounded-lg bg-bg border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="font-mono text-accent shrink-0">[${fb.type}]</span>
+              <span class="text-textSub font-medium truncate">${fb.title}</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border ${st.badge}">${st.label}</span>
+            </div>
+            <div class="flex items-center gap-2 shrink-0 text-xs text-textMuted">
+              <span>${new Date(fb.created_at).toLocaleDateString()}</span>
+              <button data-copy="${fb.body.replace(/\"/g, '').replace(/'/g, '')}" class="px-2 py-1 rounded bg-elevated border border-border hover:border-borderStrong">Copy</button>
+            </div>
+            <div class="text-xs text-textDim sm:hidden w-full">${new Date(fb.created_at).toLocaleDateString()}</div>
+          </div>
+        `;
+      }).join('');
+
+      listEl.querySelectorAll('[data-copy]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          navigator.clipboard.writeText(btn.dataset.copy);
+          btn.textContent = 'Copied!';
+          setTimeout(() => btn.textContent = 'Copy', 1500);
+        });
+      });
+    }
+
+    await loadFeedback();
+  });
+</script>
